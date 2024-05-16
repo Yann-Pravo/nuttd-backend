@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  username  String
+  followers User[]    @relation("UserFollows")
+  following User[]    @relation("UserFollows")
+  nuts      Nut[]
+  role      Role      @default(USER)
+  profile   Profile?
+}
+
+model Profile {
+  id        String    @id @default(cuid())
+  firstname String?
+  lastname  String?
+  age       Int
+  gender    Gender    @default(MALE)
+  user      User      @relation(fields: [userId], references: [id])
+  userId    String    @unique
+}
+
+model Nut {
+  id          String    @id @default(cuid())
+  date        DateTime
+  city        String
+  country     String
+  coordinates String?
+  private     Boolean   @default(false)
+  solo        Boolean   @default(true)
+  released    Boolean   @default(true)
+  nutter      User?     @relation(fields: [nutId], references: [id])
+  nutId       String    @unique
+}
