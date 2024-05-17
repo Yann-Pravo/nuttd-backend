@@ -1,6 +1,15 @@
 import express from 'express'
 
-import { getUsers, getUser, createUser, updateUser, deleteUser } from '../controllers/users'
+import {
+  getUsers,
+  getUser,
+  createUser,
+  updateUser,
+  deleteUser,
+  getUserWithProfile,
+  createUserProfile,
+  getUserNuts,
+} from '../controllers/users'
 
 const router = express.Router()
 
@@ -9,5 +18,10 @@ router.get('/:userID', getUser)
 router.post('/', createUser)
 router.put('/:userID', updateUser)
 router.delete('/:userID', deleteUser)
+
+router.post('/:userID/profile', createUserProfile)
+router.get('/:userID/profile', getUserWithProfile)
+
+router.get('/:userID/nuts', getUserNuts)
 
 export default router

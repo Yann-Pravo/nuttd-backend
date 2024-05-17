@@ -9,15 +9,15 @@ const getNuts = (_: any, res: any) => {
 }
 
 const getNut = (req: any, res: any) => {
-  const { nutId } = req.params
+  const { nutID } = req.params
 
-  if (!nutId) {
-    res.status(500).json({msg: 'No nutId given'})
+  if (!nutID) {
+    res.status(500).json({msg: 'No nutID given'})
     return
   }
 
   prisma.nut.findUnique({
-      where: { id: nutId },
+      where: { id: nutID },
   })
   .then(result => res.status(200).json({ result }))
   .catch(() => res.status(404).json({msg: 'Nut not found'}))
@@ -26,14 +26,17 @@ const getNut = (req: any, res: any) => {
 const createNut = (req: any, res: any) => {
   prisma.nut.create({ data: req.body })
   .then(result => res.status(200).json({ result }))
-  .catch((error) => res.status(500).json({msg:  error }))
+  .catch((error) => {
+    console.log(error)
+    res.status(500).json({msg:  error })
+})
 }
 
 const updateNut = (req: any, res: any) => {
   const { nutID } = req.params
 
   if (!nutID) {
-    res.status(500).json({msg: 'No nutId given'})
+    res.status(500).json({msg: 'No nutID given'})
     return
   }
 
@@ -49,7 +52,7 @@ const deleteNut = (req: any, res: any) => {
   const { nutID } = req.params
 
   if (!nutID) {
-    res.status(500).json({msg: 'No nutId given'})
+    res.status(500).json({msg: 'No nutID given'})
     return
   }
 
