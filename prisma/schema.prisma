@@ -25,10 +25,13 @@ enum Gender {
 
 model User {
   id        String    @id @default(cuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   email     String    @unique
   username  String
   followers User[]    @relation("UserFollows")
   following User[]    @relation("UserFollows")
+  guilds    Guild[]
   nuts      Nut[]
   role      Role      @default(USER)
   profile   Profile?
@@ -36,6 +39,8 @@ model User {
 
 model Profile {
   id        String    @id @default(cuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   firstname String?
   lastname  String?
   age       Int
@@ -46,13 +51,21 @@ model Profile {
 
 model Nut {
   id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
   date        DateTime
   city        String
   country     String
   coordinates String?
-  private     Boolean   @default(false)
   solo        Boolean   @default(true)
-  released    Boolean   @default(true)
-  nutter      User?     @relation(fields: [nutId], references: [id])
-  nutId       String    @unique
+  nutter      User?     @relation(fields: [nutterId], references: [id])
+  nutterId    String?
+}
+
+model Guild {
+  id        String    @id @default(cuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  name      String
+  users     User[]
 }
