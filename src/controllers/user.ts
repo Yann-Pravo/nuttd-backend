@@ -12,21 +12,24 @@ const getUser = (req: any, res: any) => {
   const { userID } = req.params
 
   if (!userID) {
-    res.status(500).json({msg: 'No userId given'})
-    return
+    return res.status(500).json({ msg: 'No userId given' });
   }
 
   prisma.user.findUnique({
       where: { id: userID },
   })
-  .then(result => res.status(200).json({ result }))
+  .then(result => {
+    if (result === null) return res.status(404).json({msg: 'User not found'})
+
+    res.status(200).json({ result })
+  })
   .catch(() => res.status(404).json({msg: 'User not found'}))
 }
 
 const createUser = (req: any, res: any) => {
   prisma.user.create({ data: req.body })
   .then(result => res.status(200).json({ result }))
-  .catch((error) => res.status(500).json({msg:  error }))
+  .catch((error) => res.status(500).json({ msg:  error }))
 }
 
 const updateUser = (req: any, res: any) => {
@@ -49,8 +52,7 @@ const deleteUser = (req: any, res: any) => {
   const { userID } = req.params
 
   if (!userID) {
-    res.status(500).json({msg: 'No userId given'})
-    return
+    return res.status(500).json({ msg: 'No userId given' });
   }
 
   prisma.user.delete({

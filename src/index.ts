@@ -1,13 +1,13 @@
 import express from 'express'
-import usersRouter from './routes/users'
-import nutsRouter from './routes/nuts'
+import userRouter from './routes/user'
+import nutRouter from './routes/nut'
 
 export const app = express()
 
 app.use(express.json())
 
-app.use('/api/users', usersRouter)
-app.use('/api/nuts', nutsRouter)
+app.use('/api/users', userRouter)
+app.use('/api/nuts', nutRouter)
 
 app.listen(3000, () =>
   console.log('REST API server ready at: http://localhost:3000'),

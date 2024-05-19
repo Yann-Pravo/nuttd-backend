@@ -9,7 +9,7 @@ import {
   getUserWithProfile,
   createUserProfile,
   getUserNuts,
-} from '../controllers/users'
+} from '../controllers/user'
 
 const router = express.Router()
 
