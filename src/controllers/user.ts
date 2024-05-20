@@ -1,14 +1,15 @@
+import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-const getUsers = (_: any, res: any) => {
+const getUsers = (_: Request, res: Response) => {
   prisma.user.findMany()
   .then(result => res.status(200).json({ result }))
   .catch(() => res.status(404).json({msg: 'Users not found'}))
 }
 
-const getUser = (req: any, res: any) => {
+const getUser = (req: Request, res: Response) => {
   const { userID } = req.params
 
   if (!userID) {
@@ -26,13 +27,13 @@ const getUser = (req: any, res: any) => {
   .catch(() => res.status(404).json({msg: 'User not found'}))
 }
 
-const createUser = (req: any, res: any) => {
+const createUser = (req: Request, res: Response) => {
   prisma.user.create({ data: req.body })
   .then(result => res.status(200).json({ result }))
   .catch((error) => res.status(500).json({ msg:  error }))
 }
 
-const updateUser = (req: any, res: any) => {
+const updateUser = (req: Request, res: Response) => {
   const { userID } = req.params
 
   if (!userID) {
@@ -48,7 +49,7 @@ const updateUser = (req: any, res: any) => {
   .catch((error) => res.status(500).json({msg:  error }))
 }
 
-const deleteUser = (req: any, res: any) => {
+const deleteUser = (req: Request, res: Response) => {
   const { userID } = req.params
 
   if (!userID) {
@@ -62,7 +63,7 @@ const deleteUser = (req: any, res: any) => {
   .catch(() => res.status(404).json({msg: 'User not found'}))
 }
 
-const createUserProfile = (req: any, res: any) => {
+const createUserProfile = (req: Request, res: Response) => {
   const { userID } = req.params
 
   if (!userID) {
@@ -75,7 +76,7 @@ const createUserProfile = (req: any, res: any) => {
   .catch(() => res.status(404).json({msg: 'User not found'}))
 }
 
-const getUserWithProfile = (req: any, res: any) => {
+const getUserWithProfile = (req: Request, res: Response) => {
   const { userID } = req.params
 
   if (!userID) {
@@ -91,7 +92,7 @@ const getUserWithProfile = (req: any, res: any) => {
   .catch(() => res.status(404).json({msg: 'User not found'}))
 }
 
-const getUserNuts = (req: any, res: any) => {
+const getUserNuts = (req: Request, res: Response) => {
   const { userID } = req.params
 
   if (!userID) {

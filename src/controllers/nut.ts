@@ -1,14 +1,15 @@
+import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-const getNuts = (_: any, res: any) => {
+const getNuts = (_: Request, res: Response) => {
   prisma.nut.findMany()
   .then(result => res.status(200).json({ result }))
   .catch(() => res.status(404).json({msg: 'Nuts not found'}))
 }
 
-const getNut = (req: any, res: any) => {
+const getNut = (req: Request, res: Response) => {
   const { nutID } = req.params
 
   if (!nutID) {
@@ -23,7 +24,7 @@ const getNut = (req: any, res: any) => {
   .catch(() => res.status(404).json({msg: 'Nut not found'}))
 }
 
-const createNut = (req: any, res: any) => {
+const createNut = (req: Request, res: Response) => {
   prisma.nut.create({ data: req.body })
   .then(result => res.status(200).json({ result }))
   .catch((error) => {
@@ -32,7 +33,7 @@ const createNut = (req: any, res: any) => {
 })
 }
 
-const updateNut = (req: any, res: any) => {
+const updateNut = (req: Request, res: Response) => {
   const { nutID } = req.params
 
   if (!nutID) {
@@ -48,7 +49,7 @@ const updateNut = (req: any, res: any) => {
   .catch((error) => res.status(500).json({msg:  error }))
 }
 
-const deleteNut = (req: any, res: any) => {
+const deleteNut = (req: Request, res: Response) => {
   const { nutID } = req.params
 
   if (!nutID) {
