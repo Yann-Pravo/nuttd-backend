@@ -10,12 +10,14 @@ import {
   createUserProfile,
   getUserNuts,
 } from '../controllers/user'
+import { checkSchema } from 'express-validator'
+import { createUserSchema } from '../schemas/user'
 
 const router = Router()
 
 router.get('/', getUsers)
 router.get('/:userID', getUser)
-router.post('/', createUser)
+router.post('/', checkSchema(createUserSchema), createUser)
 router.put('/:userID', updateUser)
 router.delete('/:userID', deleteUser)
 

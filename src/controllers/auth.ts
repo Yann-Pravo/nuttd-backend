@@ -1,7 +1,7 @@
 import passport from "passport";
 import { Strategy } from "passport-local";
-import bcrypt from 'bcryptjs';
 import db from "../../client";
+import { comparePassword } from "../utils/helpers";
 
 passport.serializeUser((user: any, done) => {
 	done(null, user.id);
@@ -30,7 +30,7 @@ export default passport.use(
         },
       })
 
-      const isMatch = await bcrypt.compare(password, findUser?.password || '');
+      const isMatch = await comparePassword(password, findUser?.password || '');
 
       if (!findUser || !isMatch)
         throw new Error("Invalid credentials")

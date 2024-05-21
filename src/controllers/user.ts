@@ -1,5 +1,12 @@
 import { Request, Response } from 'express';
+import {
+	validationResult,
+	matchedData,
+} from "express-validator";
 import db from '../../client';
+import { hashPassword } from '../utils/helpers';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { getErrorMessage } from '../utils/errors';
 
 const getUsers = (_: Request, res: Response) => {
   db.user.findMany()
@@ -25,10 +32,24 @@ const getUser = (req: Request, res: Response) => {
   .catch(() => res.status(404).json({msg: 'User not found'}))
 }
 
-const createUser = (req: Request, res: Response) => {
-  db.user.create({ data: req.body })
-  .then(result => res.status(200).json({ result }))
-  .catch((error) => res.status(500).json({ msg:  error }))
+const createUser = async (req: Request, res: Response) => {
+  const result = validationResult(req);
+	if (!result.isEmpty())
+    return res.status(400).send(result.array());
+
+	const data = matchedData(req);
+	const hashedPassword = await hashPassword(data.password);
+
+	try {
+    const user = await db.user.create({ data: {
+      ...req.body,
+      password: hashedPassword
+    }})
+
+		return res.status(201).send(user);
+	} catch (err: any) {
+		return res.status(400).json({msg: getErrorMessage(err)});
+	}
 }
 
 const updateUser = (req: Request, res: Response) => {
