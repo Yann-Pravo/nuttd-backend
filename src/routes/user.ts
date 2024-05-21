@@ -1,4 +1,4 @@
-import express from 'express'
+import { Router } from 'express'
 
 import {
   getUsers,
@@ -11,7 +11,7 @@ import {
   getUserNuts,
 } from '../controllers/user'
 
-const router = express.Router()
+const router = Router()
 
 router.get('/', getUsers)
 router.get('/:userID', getUser)

@@ -1,10 +1,8 @@
 import { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import db from '../../client';
 
 const getNuts = (_: Request, res: Response) => {
-  prisma.nut.findMany()
+  db.nut.findMany()
   .then(result => res.status(200).json({ result }))
   .catch(() => res.status(404).json({msg: 'Nuts not found'}))
 }
@@ -17,7 +15,7 @@ const getNut = (req: Request, res: Response) => {
     return
   }
 
-  prisma.nut.findUnique({
+  db.nut.findUnique({
       where: { id: nutID },
   })
   .then(result => res.status(200).json({ result }))
@@ -25,7 +23,7 @@ const getNut = (req: Request, res: Response) => {
 }
 
 const createNut = (req: Request, res: Response) => {
-  prisma.nut.create({ data: req.body })
+  db.nut.create({ data: req.body })
   .then(result => res.status(200).json({ result }))
   .catch((error) => {
     console.log(error)
@@ -41,7 +39,7 @@ const updateNut = (req: Request, res: Response) => {
     return
   }
 
-  prisma.nut.update({
+  db.nut.update({
     where: { id: nutID },
     data: req.body
   })
@@ -57,7 +55,7 @@ const deleteNut = (req: Request, res: Response) => {
     return
   }
 
-  prisma.nut.delete({
+  db.nut.delete({
       where: { id: nutID },
   })
   .then(result => res.status(200).json({ result }))
