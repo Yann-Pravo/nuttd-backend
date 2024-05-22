@@ -5,7 +5,6 @@ import {
 } from "express-validator";
 import db from '../../client';
 import { hashPassword } from '../utils/helpers';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { getErrorMessage } from '../utils/errors';
 
 const getUsers = (_: Request, res: Response) => {

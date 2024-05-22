@@ -1,43 +1,20 @@
-import passport from "passport";
-import { Strategy } from "passport-local";
-import db from "../../client";
-import { comparePassword } from "../utils/helpers";
+import { Request, Response } from 'express';
 
-passport.serializeUser((user: any, done) => {
-	done(null, user.id);
-});
+export const login = (_: Request, res: Response) => res.sendStatus(200)
 
-passport.deserializeUser(async (id: string, done) => {
-	try {
-		const findUser = await db.user.findUnique({where: { id }});
-		if (!findUser)
-      throw new Error("User Not Found");
-		done(null, findUser);
-	} catch (err) {
-		done(err, null);
-	}
-});
+export const getStatus = (req: Request, res: Response) => {
+	if (req.user)
+    return res.send(req.user)
 
-export default passport.use(
-	new Strategy({ usernameField: 'email'}, async (email, password, done) => {
-		try {
-			const findUser = await db.user.findFirst({
-        where: {
-          email: {
-            equals: email,
-            mode: 'insensitive',
-          },
-        },
-      })
+  return res.sendStatus(401);
+}
 
-      const isMatch = await comparePassword(password, findUser?.password || '');
+export const logout = (req: Request, res: Response) => {
+	if (!req.user)
+    return res.sendStatus(401);
 
-      if (!findUser || !isMatch)
-        throw new Error("Invalid credentials")
-
-			done(null, findUser);
-		} catch (err) {
-			done(err, false);
-		}
-	})
-);
+  req.logout(err => {
+    if (err) return res.sendStatus(400);
+    return res.sendStatus(200);
+  })
+}
