@@ -6,8 +6,9 @@ import { PrismaSessionStore } from '@quixo3/prisma-session-store';
 import userRouter from './routes/user'
 import nutRouter from './routes/nut'
 import authRouter from './routes/auth';
-import './controllers/auth';
+import './strategies/local-strategy';
 import db from '../client';
+import { privateRoute } from './utils/middlewares';
 
 export const app = express()
 dotenv.config()
@@ -36,6 +37,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use("/api/auth", authRouter)
+
+app.use(privateRoute)
 app.use('/api/users', userRouter)
 app.use('/api/nuts', nutRouter)
 

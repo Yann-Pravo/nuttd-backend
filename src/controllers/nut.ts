@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
 import db from '../../client';
 
-const getNuts = (_: Request, res: Response) => {
+export const getNuts = (_: Request, res: Response) => {
   db.nut.findMany()
   .then(result => res.status(200).json({ result }))
   .catch(() => res.status(404).json({msg: 'Nuts not found'}))
 }
 
-const getNut = (req: Request, res: Response) => {
+export const getNut = (req: Request, res: Response) => {
   const { nutID } = req.params
 
   if (!nutID) {
@@ -22,7 +22,7 @@ const getNut = (req: Request, res: Response) => {
   .catch(() => res.status(404).json({msg: 'Nut not found'}))
 }
 
-const createNut = (req: Request, res: Response) => {
+export const createNut = (req: Request, res: Response) => {
   db.nut.create({ data: req.body })
   .then(result => res.status(200).json({ result }))
   .catch((error) => {
@@ -31,7 +31,7 @@ const createNut = (req: Request, res: Response) => {
 })
 }
 
-const updateNut = (req: Request, res: Response) => {
+export const updateNut = (req: Request, res: Response) => {
   const { nutID } = req.params
 
   if (!nutID) {
@@ -47,7 +47,7 @@ const updateNut = (req: Request, res: Response) => {
   .catch((error) => res.status(500).json({msg:  error }))
 }
 
-const deleteNut = (req: Request, res: Response) => {
+export const deleteNut = (req: Request, res: Response) => {
   const { nutID } = req.params
 
   if (!nutID) {
@@ -60,12 +60,4 @@ const deleteNut = (req: Request, res: Response) => {
   })
   .then(result => res.status(200).json({ result }))
   .catch(() => res.status(404).json({msg: 'Nut not found'}))
-}
-
-export {
-  getNuts,
-  getNut,
-  createNut,
-  updateNut,
-  deleteNut
 }
