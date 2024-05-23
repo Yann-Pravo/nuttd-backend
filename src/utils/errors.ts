@@ -1,4 +1,4 @@
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 
 export const getErrorMessage = (err: any) => {
   if (err instanceof PrismaClientKnownRequestError) {
@@ -7,5 +7,5 @@ export const getErrorMessage = (err: any) => {
     }
   }
 
-    return "Something went wrong"
+  return 'Something went wrong'
 }

@@ -1,6 +1,12 @@
 import express from 'express'
 
-import { getNuts, getNut, createNut, updateNut, deleteNut } from '../controllers/nut'
+import {
+  getNuts,
+  getNut,
+  createNut,
+  updateNut,
+  deleteNut,
+} from '../controllers/nut'
 
 const router = express.Router()
 

@@ -7,7 +7,7 @@ async function main() {
     data: {
       username: 'test',
       email: 'test@nuttd.com',
-      password: 'test'
+      password: 'test',
     },
   })
   console.log('Created new user: ', newArtist)
