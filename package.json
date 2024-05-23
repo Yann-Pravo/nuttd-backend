@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "npx nodemon --files src/index.ts",
     "test": "jest",
     "lint": "eslint"
   },
@@ -34,6 +35,7 @@
     "@prisma/client": "^5.14.0",
     "@quixo3/prisma-session-store": "^3.1.13",
     "@types/express-session": "^1.18.0",
+    "@types/passport": "^1.0.16",
     "@types/passport-local": "^1.0.38",
     "@types/supertest": "^6.0.2",
     "dotenv": "^16.4.5",

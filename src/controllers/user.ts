@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import db from '../../client'
+import { handleError } from '../utils/errors'
 
 export const getUsers = (_: Request, res: Response) => {
   db.user
@@ -8,15 +9,11 @@ export const getUsers = (_: Request, res: Response) => {
     .catch(() => res.status(404).json({ msg: 'Users not found' }))
 }
 
-export const getUser = (req: Request, res: Response) => {
+export const getUser = async (req: Request, res: Response) => {
   const { userID } = req.params
 
-  if (!userID) {
-    return res.status(500).json({ msg: 'No userId given' })
-  }
-
-  db.user
-    .findFirst({
+  try {
+    const user = await db.user.findFirst({
       where: {
         id: {
           equals: userID,
@@ -24,13 +21,13 @@ export const getUser = (req: Request, res: Response) => {
         },
       },
     })
-    .then((result) => {
-      if (result === null)
-        return res.status(404).json({ msg: 'User not found' })
 
-      res.status(200).json({ result })
-    })
-    .catch(() => res.status(404).json({ msg: 'User not found' }))
+    if (user === null) return res.status(404).json({ msg: 'User not found' })
+
+    res.status(200).json(user)
+  } catch (err) {
+    handleError(err, res)
+  }
 }
 
 export const updateUser = (req: Request, res: Response) => {

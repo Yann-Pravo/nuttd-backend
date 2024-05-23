@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { validationResult, matchedData } from 'express-validator'
 import { hashPassword } from '../utils/helpers'
-import { getErrorMessage } from '../utils/errors'
+import { handleError } from '../utils/errors'
 import db from '../../client'
 
 export const signup = async (req: Request, res: Response) => {
@@ -22,8 +22,8 @@ export const signup = async (req: Request, res: Response) => {
     })
 
     return res.status(201).send(user)
-  } catch (err: any) {
-    return res.status(400).json({ msg: getErrorMessage(err) })
+  } catch (err) {
+    return handleError(err, res)
   }
 }
 
