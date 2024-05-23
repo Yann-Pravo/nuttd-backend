@@ -14,8 +14,13 @@ export const getUser = (req: Request, res: Response) => {
     return res.status(500).json({ msg: 'No userId given' });
   }
 
-  db.user.findUnique({
-      where: { id: userID },
+  db.user.findFirst({
+    where: {
+      id: {
+        equals: userID,
+        mode: 'insensitive',
+      },
+    },
   })
   .then(result => {
     if (result === null) return res.status(404).json({msg: 'User not found'})
@@ -41,18 +46,20 @@ export const updateUser = (req: Request, res: Response) => {
   .catch((error) => res.status(500).json({msg:  error }))
 }
 
-export const deleteUser = (req: Request, res: Response) => {
+export const deleteUser = async (req: Request, res: Response) => {
   const { userID } = req.params
 
-  if (!userID) {
-    return res.status(500).json({ msg: 'No userId given' });
-  }
+  try {
+    const profile = await db.profile.findUnique({ where: { userId: userID } })
+    if (profile)
+      await db.profile.delete({ where: { userId: userID } })
 
-  db.profile.delete({ where: { userId: userID } })
-    .then(() => db.user.delete({ where: { id: userID } })
-      .then(result => res.status(200).json({ result }))
-      .catch(() => res.status(404).json({msg: 'User not found'}))
-    )
+    await db.user.delete({ where: { id: userID } })
+
+    res.status(200).json('User deleted')
+  } catch {
+    res.status(404).json({msg: 'User not found'})
+  }
 }
 
 export const createUserProfile = (req: Request, res: Response) => {

@@ -7,7 +7,7 @@ import { createUserSchema } from '../schemas/user'
 
 const router = express.Router();
 
-router.post('/register', publicRoute, checkSchema(createUserSchema), signup)
+router.post('/signup', publicRoute, checkSchema(createUserSchema), signup)
 router.post('/login', publicRoute, passport.authenticate(['local']), login);
 router.get("/status", privateRoute, getStatus);
 router.post("/logout", privateRoute, logout);

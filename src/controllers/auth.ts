@@ -18,6 +18,8 @@ export const signup = async (req: Request, res: Response) => {
 	try {
     const user = await db.user.create({ data: {
       ...req.body,
+      username: req.body.username.toLowerCase(),
+      email: req.body.email.toLowerCase(),
       password: hashedPassword
     }})
 
