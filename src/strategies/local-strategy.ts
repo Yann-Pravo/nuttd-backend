@@ -3,6 +3,7 @@ import { Strategy } from 'passport-local'
 import db from '../../client'
 import { comparePassword } from '../utils/helpers'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 passport.serializeUser((user: any, done) => {
   done(null, user.id)
 })
@@ -28,10 +29,10 @@ export default passport.use(
           },
         },
       })
+      if (!findUser) throw new Error('Invalid credentials')
 
-      const isMatch = await comparePassword(password, findUser?.password || '')
-
-      if (!findUser || !isMatch) throw new Error('Invalid credentials')
+      const isMatch = await comparePassword(password, findUser.password)
+      if (!isMatch) throw new Error('Invalid credentials')
 
       done(null, findUser)
     } catch (err) {

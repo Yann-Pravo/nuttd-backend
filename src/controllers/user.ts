@@ -1,12 +1,34 @@
 import { Request, Response } from 'express'
 import db from '../../client'
 import { handleError } from '../utils/errors'
+import {
+  comparePassword,
+  getPrivateUser,
+  getPublicUsers,
+  hashPassword,
+} from '../utils/helpers'
 
-export const getUsers = (_: Request, res: Response) => {
-  db.user
-    .findMany()
-    .then((result) => res.status(200).json({ result }))
-    .catch(() => res.status(404).json({ msg: 'Users not found' }))
+export const getUsersByUsername = async (req: Request, res: Response) => {
+  const { filter } = req.query
+
+  if (!filter || typeof filter !== 'string' || filter.length < 3)
+    return res.status(200).json([])
+
+  try {
+    const users = await db.user.findMany({
+      take: 10,
+      where: {
+        username: {
+          contains: filter,
+          mode: 'insensitive',
+        },
+      },
+    })
+
+    return res.status(200).json(getPublicUsers(users))
+  } catch (err) {
+    handleError(err, res)
+  }
 }
 
 export const getUser = async (req: Request, res: Response) => {
@@ -20,34 +42,80 @@ export const getUser = async (req: Request, res: Response) => {
           mode: 'insensitive',
         },
       },
+      include: {
+        profile: true,
+        followers: true,
+        following: true,
+        guilds: true,
+        nuts: true,
+      },
     })
 
-    if (user === null) return res.status(404).json({ msg: 'User not found' })
+    if (!user) throw new Error('User not found')
 
-    res.status(200).json(user)
+    return res.status(200).json(getPrivateUser(user))
   } catch (err) {
     handleError(err, res)
   }
 }
 
-export const updateUser = (req: Request, res: Response) => {
+export const changePassword = async (req: Request, res: Response) => {
   const { userID } = req.params
 
-  if (!userID) {
-    res.status(500).json({ msg: 'No userId given' })
-    return
-  }
+  const { oldPassword, newPassword, verifyNewPassword } = req.body
 
-  db.user
-    .update({
-      where: { id: userID },
-      data: req.body,
+  try {
+    const existingUser = await db.user.findFirst({
+      where: {
+        id: {
+          equals: userID,
+          mode: 'insensitive',
+        },
+      },
     })
-    .then((result) => res.status(200).json({ result }))
-    .catch((error) => res.status(500).json({ msg: error }))
+
+    if (!existingUser) throw new Error('User not found')
+
+    const isMatchOldPassword = await comparePassword(
+      oldPassword,
+      existingUser.password
+    )
+    if (!isMatchOldPassword)
+      return res
+        .status(400)
+        .json({ msg: 'Old password doesn‘t match with the existing one.' })
+
+    if (oldPassword === newPassword)
+      return res
+        .status(400)
+        .json({ msg: 'Old and new passwords are the same.' })
+
+    if (newPassword !== verifyNewPassword)
+      return res.status(400).json({ msg: 'New passwords don‘t match.' })
+
+    console.log('OK1')
+
+    const hashedNewPassword = await hashPassword(newPassword)
+
+    console.log('OK2')
+
+    await db.user.update({
+      where: { id: userID },
+      data: {
+        password: hashedNewPassword,
+      },
+    })
+
+    console.log('OK3')
+
+    return res.sendStatus(200)
+  } catch (err) {
+    console.log(err)
+    handleError(err, res)
+  }
 }
 
-export const deleteUser = async (req: Request, res: Response) => {
+export const deleteUserWithProfile = async (req: Request, res: Response) => {
   const { userID } = req.params
 
   try {
@@ -58,55 +126,75 @@ export const deleteUser = async (req: Request, res: Response) => {
 
     await db.user.delete({ where: { id: userID } })
 
-    res.status(200).json('User deleted')
-  } catch {
-    res.status(404).json({ msg: 'User not found' })
+    res.sendStatus(200)
+  } catch (err) {
+    handleError(err, res)
   }
 }
 
-export const createUserProfile = (req: Request, res: Response) => {
+export const createUserProfile = async (req: Request, res: Response) => {
   const { userID } = req.params
 
-  if (!userID) {
-    res.status(500).json({ msg: 'No userId given' })
-    return
-  }
-
-  db.profile
-    .create({ data: { userId: userID, ...req.body } })
-    .then((result) => res.status(200).json({ result }))
-    .catch(() => res.status(404).json({ msg: 'User not found' }))
-}
-
-export const getUserWithProfile = (req: Request, res: Response) => {
-  const { userID } = req.params
-
-  if (!userID) {
-    res.status(500).json({ msg: 'No userId given' })
-    return
-  }
-
-  db.user
-    .findUnique({
-      where: { id: userID },
-      include: { profile: true },
+  try {
+    await db.profile.create({
+      data: { userId: userID, ...req.body },
     })
-    .then((result) => res.status(200).json({ result }))
-    .catch(() => res.status(404).json({ msg: 'User not found' }))
+
+    return res.sendStatus(200)
+  } catch (err) {
+    handleError(err, res)
+  }
 }
 
-export const getUserNuts = (req: Request, res: Response) => {
+export const getUserNuts = async (req: Request, res: Response) => {
   const { userID } = req.params
 
-  if (!userID) {
-    res.status(500).json({ msg: 'No userId given' })
-    return
-  }
-
-  db.nut
-    .findMany({
+  try {
+    const nuts = await db.nut.findMany({
       where: { nutterId: userID },
     })
-    .then((result) => res.status(200).json({ result }))
-    .catch(() => res.status(404).json({ msg: 'User not found' }))
+
+    return res.status(200).json(nuts)
+  } catch (err) {
+    handleError(err, res)
+  }
+}
+
+export const createNut = async (req: Request, res: Response) => {
+  try {
+    db.nut.create({ data: req.body })
+
+    return res.sendStatus(200)
+  } catch (err) {
+    handleError(err, res)
+  }
+}
+
+export const updateNut = async (req: Request, res: Response) => {
+  const { nutID } = req.params
+
+  try {
+    db.nut.update({
+      where: { id: nutID },
+      data: req.body,
+    })
+
+    return res.sendStatus(200)
+  } catch (err) {
+    handleError(err, res)
+  }
+}
+
+export const deleteNut = (req: Request, res: Response) => {
+  const { nutID } = req.params
+
+  try {
+    db.nut.delete({
+      where: { id: nutID },
+    })
+
+    return res.sendStatus(200)
+  } catch (err) {
+    handleError(err, res)
+  }
 }
