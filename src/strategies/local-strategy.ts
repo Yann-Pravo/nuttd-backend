@@ -31,7 +31,7 @@ export default passport.use(
       })
       if (!findUser) throw new Error('Invalid credentials')
 
-      const isMatch = await comparePassword(password, findUser.password)
+      const isMatch = await comparePassword(password, findUser.password || '')
       if (!isMatch) throw new Error('Invalid credentials')
 
       done(null, findUser)

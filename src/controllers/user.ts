@@ -78,7 +78,7 @@ export const changePassword = async (req: Request, res: Response) => {
 
     const isMatchOldPassword = await comparePassword(
       oldPassword,
-      existingUser.password
+      existingUser.password || ''
     )
     if (!isMatchOldPassword)
       return res

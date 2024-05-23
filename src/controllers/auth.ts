@@ -1,15 +1,14 @@
 import { Request, Response } from 'express'
-import { validationResult, matchedData } from 'express-validator'
+import { validationResult } from 'express-validator'
 import { hashPassword } from '../utils/helpers'
 import { handleError } from '../utils/errors'
 import db from '../../client'
 
 export const signup = async (req: Request, res: Response) => {
   const result = validationResult(req)
-  if (!result.isEmpty()) return res.status(400).send(result.array())
+  if (!result.isEmpty()) return res.sendStatus(400)
 
-  const data = matchedData(req)
-  const hashedPassword = await hashPassword(data.password)
+  const hashedPassword = await hashPassword(req.body.password)
 
   try {
     const user = await db.user.create({
@@ -40,4 +39,8 @@ export const logout = (req: Request, res: Response) => {
     if (err) return res.sendStatus(400)
     return res.sendStatus(200)
   })
+}
+
+export const redirectDiscord = (_: Request, res: Response) => {
+  res.sendStatus(200)
 }

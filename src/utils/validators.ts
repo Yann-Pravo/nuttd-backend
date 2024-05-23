@@ -1,4 +1,4 @@
-export const createUserSchema = {
+export const signupSchema = {
   username: {
     isLength: {
       options: {

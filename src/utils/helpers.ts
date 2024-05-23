@@ -1,4 +1,4 @@
-import { Guild, Nut, Profile, User } from '@prisma/client'
+import { Gender, Guild, Nut, Profile, User } from '@prisma/client'
 import bcrypt from 'bcrypt'
 
 interface FullUser extends User {
@@ -27,8 +27,8 @@ export const getPrivateUser = (user: FullUser) => {
     id,
     username,
     email,
-    firstname: profile?.firstname || '',
-    lastname: profile?.lastname || '',
+    displayName: profile?.displayName || '',
+    birthday: profile?.birthday,
     followers,
     following,
     guilds,
@@ -44,3 +44,9 @@ export const getPublicUser = (user: User) => {
 
 export const getPublicUsers = (users: User[]) =>
   users.map((user) => getPublicUser(user))
+
+export const getGender = (gender?: string) => {
+  if (!gender) return null
+  if (gender === 'male') return Gender.MALE
+  if (gender === 'female') return Gender.FEMALE
+}
