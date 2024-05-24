@@ -45,6 +45,15 @@ export const getPublicUser = (user: User) => {
 export const getPublicUsers = (users: User[]) =>
   users.map((user) => getPublicUser(user))
 
+export const getPublicNut = (nut: Nut) => {
+  const { id, date, city, country, coordinates } = nut
+
+  return { id, date, city, country, coordinates }
+}
+
+export const getPublicNuts = (nuts: Nut[]) =>
+  nuts.map((nut) => getPublicNut(nut))
+
 export const getGender = (gender?: string) => {
   if (!gender) return null
   if (gender === 'male') return Gender.MALE

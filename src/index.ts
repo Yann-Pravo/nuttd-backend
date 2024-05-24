@@ -4,6 +4,7 @@ import passport from 'passport'
 import dotenv from 'dotenv'
 import { PrismaSessionStore } from '@quixo3/prisma-session-store'
 import userRouter from './routes/user'
+import authProfile from './routes/profile'
 import nutRouter from './routes/nut'
 import authRouter from './routes/auth'
 import './strategies/local-strategy'
@@ -41,6 +42,7 @@ app.use('/api/auth', authRouter)
 
 app.use(privateRoute)
 app.use('/api/users', userRouter)
+app.use('/api/profile', authProfile)
 app.use('/api/nuts', nutRouter)
 
 app.listen(3000, () =>

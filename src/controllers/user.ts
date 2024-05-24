@@ -93,11 +93,7 @@ export const changePassword = async (req: Request, res: Response) => {
     if (newPassword !== verifyNewPassword)
       return res.status(400).json({ msg: 'New passwords don‘t match.' })
 
-    console.log('OK1')
-
     const hashedNewPassword = await hashPassword(newPassword)
-
-    console.log('OK2')
 
     await db.user.update({
       where: { id: userID },
@@ -105,8 +101,6 @@ export const changePassword = async (req: Request, res: Response) => {
         password: hashedNewPassword,
       },
     })
-
-    console.log('OK3')
 
     return res.sendStatus(200)
   } catch (err) {
@@ -127,73 +121,6 @@ export const deleteUserWithProfile = async (req: Request, res: Response) => {
     await db.user.delete({ where: { id: userID } })
 
     res.sendStatus(200)
-  } catch (err) {
-    handleError(err, res)
-  }
-}
-
-export const createUserProfile = async (req: Request, res: Response) => {
-  const { userID } = req.params
-
-  try {
-    await db.profile.create({
-      data: { userId: userID, ...req.body },
-    })
-
-    return res.sendStatus(200)
-  } catch (err) {
-    handleError(err, res)
-  }
-}
-
-export const getUserNuts = async (req: Request, res: Response) => {
-  const { userID } = req.params
-
-  try {
-    const nuts = await db.nut.findMany({
-      where: { nutterId: userID },
-    })
-
-    return res.status(200).json(nuts)
-  } catch (err) {
-    handleError(err, res)
-  }
-}
-
-export const createNut = async (req: Request, res: Response) => {
-  try {
-    db.nut.create({ data: req.body })
-
-    return res.sendStatus(200)
-  } catch (err) {
-    handleError(err, res)
-  }
-}
-
-export const updateNut = async (req: Request, res: Response) => {
-  const { nutID } = req.params
-
-  try {
-    db.nut.update({
-      where: { id: nutID },
-      data: req.body,
-    })
-
-    return res.sendStatus(200)
-  } catch (err) {
-    handleError(err, res)
-  }
-}
-
-export const deleteNut = (req: Request, res: Response) => {
-  const { nutID } = req.params
-
-  try {
-    db.nut.delete({
-      where: { id: nutID },
-    })
-
-    return res.sendStatus(200)
   } catch (err) {
     handleError(err, res)
   }

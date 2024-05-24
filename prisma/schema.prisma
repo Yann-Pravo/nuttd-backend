@@ -77,7 +77,7 @@ model Nut {
   coordinates String?
   solo        Boolean   @default(true)
   nutter      User?     @relation(fields: [nutterId], references: [id])
-  nutterId    String?
+  nutterId    String
 }
 
 model Guild {

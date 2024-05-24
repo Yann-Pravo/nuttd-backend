@@ -6,7 +6,10 @@ export const handleError = (err: unknown, res: Response) => {
     if (err.code === 'P2002') {
       return res.status(400).json({ msg: `${err.meta?.target} already exists` })
     }
+    if (err.code === 'P2025') {
+      return res.status(404).json(`${err.meta?.modelName} not found`)
+    }
   }
 
-  return res.status(500).json({ msg: 'Something went wrong' })
+  return res.status(500).json('Something went wrong')
 }
