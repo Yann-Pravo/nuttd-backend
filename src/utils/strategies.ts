@@ -66,7 +66,7 @@ export const verifyStrategy = async (
     if (!findUser) {
       const newUser = await db.user.create({
         data: {
-          username: username.toLowerCase(),
+          username,
           email: email.toLowerCase(),
           thirdParty: {
             create: {
@@ -86,6 +86,7 @@ export const verifyStrategy = async (
           },
         },
       })
+
       return done(null, newUser)
     }
 

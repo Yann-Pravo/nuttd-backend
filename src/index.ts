@@ -9,6 +9,7 @@ import authRouter from './routes/auth'
 import './strategies/local-strategy'
 import './strategies/discord-strategy'
 import './strategies/facebook-strategy'
+import './strategies/google-strategy'
 import db from '../client'
 import { privateRoute } from './utils/middlewares'
 

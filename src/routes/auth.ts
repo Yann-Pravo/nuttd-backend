@@ -5,7 +5,7 @@ import {
   getStatus,
   logout,
   signup,
-  redirectDiscord,
+  redirectThirdParty,
 } from '../controllers/auth'
 import { privateRoute, publicRoute } from '../utils/middlewares'
 import { checkSchema } from 'express-validator'
@@ -18,8 +18,9 @@ router.post('/login', publicRoute, passport.authenticate(['local']), login)
 router.get('/discord', publicRoute, passport.authenticate(['discord']))
 router.get(
   '/discord/redirect',
+  publicRoute,
   passport.authenticate(['discord']),
-  redirectDiscord
+  redirectThirdParty
 )
 router.get(
   '/facebook',
@@ -30,8 +31,20 @@ router.get(
 )
 router.get(
   '/facebook/redirect',
+  publicRoute,
   passport.authenticate('facebook'),
-  redirectDiscord
+  redirectThirdParty
+)
+router.get(
+  '/google',
+  publicRoute,
+  passport.authenticate(['google'], { scope: ['profile', 'email'] })
+)
+router.get(
+  '/google/redirect',
+  publicRoute,
+  passport.authenticate(['google']),
+  redirectThirdParty
 )
 router.get('/status', privateRoute, getStatus)
 router.post('/logout', privateRoute, logout)

@@ -14,7 +14,7 @@ export const signup = async (req: Request, res: Response) => {
     const user = await db.user.create({
       data: {
         ...req.body,
-        username: req.body.username.toLowerCase(),
+        username: req.body.username,
         email: req.body.email.toLowerCase(),
         password: hashedPassword,
       },
@@ -41,6 +41,5 @@ export const logout = (req: Request, res: Response) => {
   })
 }
 
-export const redirectDiscord = (_: Request, res: Response) => {
+export const redirectThirdParty = (_: Request, res: Response) =>
   res.sendStatus(200)
-}

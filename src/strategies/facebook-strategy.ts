@@ -5,6 +5,7 @@ import {
   serializeUserStrategy,
   verifyStrategy,
 } from '../utils/strategies'
+import { generateUsername } from '../utils/helpers'
 
 passport.serializeUser(serializeUserStrategy)
 passport.deserializeUser(deserializeUserStrategy)
@@ -42,7 +43,7 @@ export default passport.use(
         refreshToken,
         {
           id,
-          username: username || displayName,
+          username: username || generateUsername(displayName),
           displayName,
           email: emails?.[0]?.value || '',
           avatar: photos?.[0]?.value || '',

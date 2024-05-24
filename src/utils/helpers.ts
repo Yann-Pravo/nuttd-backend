@@ -50,3 +50,6 @@ export const getGender = (gender?: string) => {
   if (gender === 'male') return Gender.MALE
   if (gender === 'female') return Gender.FEMALE
 }
+
+export const generateUsername = (name: string) =>
+  `${name.toLowerCase().replace(/ /g, '')}${Math.floor(Math.random() * 100)}`
