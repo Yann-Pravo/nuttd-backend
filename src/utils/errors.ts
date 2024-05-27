@@ -11,5 +11,8 @@ export const handleError = (err: unknown, res: Response) => {
     }
   }
 
+  if (err instanceof Error && err.message)
+    return res.status(500).json(err.message)
+
   return res.status(500).json('Something went wrong')
 }

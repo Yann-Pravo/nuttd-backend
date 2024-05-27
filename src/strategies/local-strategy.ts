@@ -1,6 +1,6 @@
 import passport from 'passport'
 import { Strategy } from 'passport-local'
-import db from '../../client'
+import { client } from '@/libs/client'
 import { comparePassword } from '../utils/helpers'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -10,7 +10,7 @@ passport.serializeUser((user: any, done) => {
 
 passport.deserializeUser(async (id: string, done) => {
   try {
-    const findUser = await db.user.findUnique({ where: { id } })
+    const findUser = await client.user.findUnique({ where: { id } })
     if (!findUser) throw new Error('User Not Found')
     done(null, findUser)
   } catch (err) {
@@ -21,7 +21,7 @@ passport.deserializeUser(async (id: string, done) => {
 export default passport.use(
   new Strategy({ usernameField: 'email' }, async (email, password, done) => {
     try {
-      const findUser = await db.user.findFirst({
+      const findUser = await client.user.findFirst({
         where: {
           email: {
             equals: email,

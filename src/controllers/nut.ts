@@ -1,11 +1,11 @@
 import { Request, Response } from 'express'
-import db from '../../client'
+import { client } from '@/libs/client'
 import { handleError } from '../utils/errors'
 import { getPublicNut, getPublicNuts } from '../utils/helpers'
 
 export const getNuts = async (_: Request, res: Response) => {
   try {
-    const nuts = await db.nut.findMany()
+    const nuts = await client.nut.findMany()
 
     res.status(200).json(getPublicNuts(nuts))
   } catch (err) {
@@ -17,7 +17,7 @@ export const getNut = async (req: Request, res: Response) => {
   const { nutID } = req.params
 
   try {
-    const nut = await db.nut.findUnique({
+    const nut = await client.nut.findUnique({
       where: { id: nutID },
     })
 
@@ -31,7 +31,7 @@ export const getNut = async (req: Request, res: Response) => {
 
 export const getMyNuts = async (req: Request, res: Response) => {
   try {
-    const nuts = await db.nut.findMany({
+    const nuts = await client.nut.findMany({
       where: { nutterId: req.user?.id },
     })
 
@@ -48,7 +48,7 @@ export const createNut = async (req: Request, res: Response) => {
     return res.status(400).json({ msg: 'The id of the user is missing.' })
 
   try {
-    await db.nut.create({
+    await client.nut.create({
       data: {
         ...req.body,
         nutterId: userId,
@@ -69,7 +69,7 @@ export const updateNut = async (req: Request, res: Response) => {
     return res.status(400).json({ msg: 'The id of the user is missing.' })
 
   try {
-    await db.nut.update({
+    await client.nut.update({
       where: { id: nutID, nutterId: userId },
       data: req.body,
     })
@@ -88,7 +88,7 @@ export const deleteNut = async (req: Request, res: Response) => {
     return res.status(400).json({ msg: 'The id of the user is missing.' })
 
   try {
-    await db.nut.delete({
+    await client.nut.delete({
       where: { id: nutID, nutterId: userId },
     })
 

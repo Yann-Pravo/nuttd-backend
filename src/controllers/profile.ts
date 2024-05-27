@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import db from '../../client'
+import { client } from '@/libs/client'
 import { handleError } from '../utils/errors'
 
 export const createProfile = async (req: Request, res: Response) => {
@@ -9,7 +9,7 @@ export const createProfile = async (req: Request, res: Response) => {
     return res.status(400).json({ msg: 'The id of the user is missing.' })
 
   try {
-    await db.profile.create({
+    await client.profile.create({
       data: { ...req.body, userId },
     })
 

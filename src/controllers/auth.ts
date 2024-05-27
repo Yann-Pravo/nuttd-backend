@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import { validationResult } from 'express-validator'
 import { hashPassword } from '../utils/helpers'
 import { handleError } from '../utils/errors'
-import db from '../../client'
+import { client } from '@/libs/client'
 
 export const signup = async (req: Request, res: Response) => {
   const result = validationResult(req)
@@ -11,7 +11,7 @@ export const signup = async (req: Request, res: Response) => {
   const hashedPassword = await hashPassword(req.body.password)
 
   try {
-    const user = await db.user.create({
+    await client.user.create({
       data: {
         ...req.body,
         username: req.body.username,
@@ -20,7 +20,7 @@ export const signup = async (req: Request, res: Response) => {
       },
     })
 
-    return res.status(201).send(user)
+    return res.status(201)
   } catch (err) {
     return handleError(err, res)
   }

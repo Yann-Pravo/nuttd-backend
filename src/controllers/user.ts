@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import db from '../../client'
+import { client } from '@/libs/client'
 import { handleError } from '../utils/errors'
 import {
   comparePassword,
@@ -15,7 +15,7 @@ export const getUsersByUsername = async (req: Request, res: Response) => {
     return res.status(200).json([])
 
   try {
-    const users = await db.user.findMany({
+    const users = await client.user.findMany({
       take: 10,
       where: {
         username: {
@@ -31,11 +31,11 @@ export const getUsersByUsername = async (req: Request, res: Response) => {
   }
 }
 
-export const getUser = async (req: Request, res: Response) => {
+export const getUserById = async (req: Request, res: Response) => {
   const { userID } = req.params
 
   try {
-    const user = await db.user.findFirst({
+    const user = await client.user.findFirst({
       where: {
         id: {
           equals: userID,
@@ -53,7 +53,7 @@ export const getUser = async (req: Request, res: Response) => {
 
     if (!user) throw new Error('User not found')
 
-    return res.status(200).json(getPrivateUser(user))
+    return res.send(getPrivateUser(user))
   } catch (err) {
     handleError(err, res)
   }
@@ -65,7 +65,7 @@ export const changePassword = async (req: Request, res: Response) => {
   const { oldPassword, newPassword, verifyNewPassword } = req.body
 
   try {
-    const existingUser = await db.user.findFirst({
+    const existingUser = await client.user.findFirst({
       where: {
         id: {
           equals: userID,
@@ -95,7 +95,7 @@ export const changePassword = async (req: Request, res: Response) => {
 
     const hashedNewPassword = await hashPassword(newPassword)
 
-    await db.user.update({
+    await client.user.update({
       where: { id: userID },
       data: {
         password: hashedNewPassword,
@@ -113,12 +113,12 @@ export const deleteUserWithProfile = async (req: Request, res: Response) => {
   const { userID } = req.params
 
   try {
-    const profile = await db.profile.findUnique({
+    const profile = await client.profile.findUnique({
       where: { userId: userID },
     })
-    if (profile) await db.profile.delete({ where: { userId: userID } })
+    if (profile) await client.profile.delete({ where: { userId: userID } })
 
-    await db.user.delete({ where: { id: userID } })
+    await client.user.delete({ where: { id: userID } })
 
     res.sendStatus(200)
   } catch (err) {

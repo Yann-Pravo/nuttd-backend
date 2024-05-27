@@ -11,7 +11,7 @@ import './strategies/local-strategy'
 import './strategies/discord-strategy'
 import './strategies/facebook-strategy'
 import './strategies/google-strategy'
-import db from '../client'
+import { client } from './libs/client'
 import { privateRoute } from './utils/middlewares'
 
 export const app = express()
@@ -26,7 +26,7 @@ app.use(
     cookie: {
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     },
-    store: new PrismaSessionStore(db, {
+    store: new PrismaSessionStore(client, {
       // store user sessions in the db
       checkPeriod: 2 * 60 * 1000, //2 min
       dbRecordIdIsSessionId: true,

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import OAuth2Strategy from 'passport-oauth2'
-import db from '../../client'
+import { client } from '@/libs/client'
 import { getGender } from './helpers'
 
 export const serializeUserStrategy = (
@@ -15,7 +15,7 @@ export const deserializeUserStrategy = async (
   done: OAuth2Strategy.VerifyCallback
 ) => {
   try {
-    const findUser = await db.user.findUnique({ where: { id } })
+    const findUser = await client.user.findUnique({ where: { id } })
     if (!findUser) throw new Error('User Not Found')
     done(null, findUser)
   } catch (err) {
@@ -50,12 +50,12 @@ export const verifyStrategy = async (
   } = profile
   let findUser
   try {
-    const findThirdParty = await db.thirdParty.findUnique({
+    const findThirdParty = await client.thirdParty.findUnique({
       where: { platformId: id },
     })
 
     if (findThirdParty) {
-      findUser = await db.user.findUnique({
+      findUser = await client.user.findUnique({
         where: { id: findThirdParty?.userId },
       })
     }
@@ -64,7 +64,7 @@ export const verifyStrategy = async (
   }
   try {
     if (!findUser) {
-      const newUser = await db.user.create({
+      const newUser = await client.user.create({
         data: {
           username,
           email: email.toLowerCase(),
