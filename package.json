@@ -4,15 +4,20 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npx src/index.ts",
     "start:local": "npx nodemon --files src/index.ts",
+    "build": "rimraf dist && tsc",
+    "ts.check": "tsc --project tsconfig.json",
+    "add-build": "git add dist",
     "test:unit": "vitest -c ./vitest.config.unit.ts",
     "test:coverage": "vitest -c ./vitest.config.unit.ts --coverage",
     "test:unit:ui": "vitest -c ./vitest.config.unit.ts --ui",
-    "lint": "eslint",
-    "postinstall": "prisma generate",
-    "vercel-build": "echo hello"
+    "lint": "eslint"
   },
+  "pre-commit": [
+    "ts.check",
+    "build",
+    "add-build"
+  ],
   "keywords": [],
   "author": "",
   "license": "ISC",
