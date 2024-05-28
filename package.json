@@ -12,7 +12,7 @@
     "test:coverage": "vitest -c ./vitest.config.unit.ts --coverage",
     "test:unit:ui": "vitest -c ./vitest.config.unit.ts --ui",
     "lint": "eslint",
-    "postinstall": "prisma generate",
+    "postinstall": "prisma generate"
   },
   "pre-commit": [
     "ts.check",
