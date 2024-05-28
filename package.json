@@ -4,12 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "npx src/index.ts",
     "start:local": "npx nodemon --files src/index.ts",
     "test:unit": "vitest -c ./vitest.config.unit.ts",
     "test:coverage": "vitest -c ./vitest.config.unit.ts --coverage",
     "test:unit:ui": "vitest -c ./vitest.config.unit.ts --ui",
     "lint": "eslint",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "vercel-build": "echo hello"
   },
   "keywords": [],
   "author": "",
