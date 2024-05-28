@@ -5,8 +5,8 @@ import {
   getUserById,
   changePassword,
   deleteUserWithProfile,
-} from '@/controllers/user'
-import { checkIsCurrentUser } from '@/utils/middlewares'
+} from '../controllers/user'
+import { checkIsCurrentUser } from '../utils/middlewares'
 
 const router = Router()
 

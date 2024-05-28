@@ -6,20 +6,20 @@ import {
   logout,
   redirectThirdParty,
   signup,
-} from '@/controllers/auth'
+} from '../../src/controllers/auth'
 
-import { client as clientMock } from '@/libs/__mocks__/client'
-import { mockedUser } from 'tests/mocks/authMock'
+import { client as clientMock } from '../../src/libs/__mocks__/client'
+import { mockedUser } from '../mocks/authMock'
 
 describe('Auth controller', () => {
   beforeEach(() => {
     vi.restoreAllMocks()
   })
 
-  vi.mock('@/libs/client', async () => {
+  vi.mock('../../src/libs/client', async () => {
     const actual = await vi.importActual<
-      typeof import('@/libs/__mocks__/client')
-    >('@/libs/__mocks__/client')
+      typeof import('../../src/libs/__mocks__/client')
+    >('../../src/libs/__mocks__/client')
     return {
       ...actual,
     }

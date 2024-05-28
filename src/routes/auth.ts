@@ -6,10 +6,10 @@ import {
   logout,
   signup,
   redirectThirdParty,
-} from '@/controllers/auth'
-import { privateRoute, publicRoute } from '@/utils/middlewares'
+} from '../controllers/auth'
+import { privateRoute, publicRoute } from '../utils/middlewares'
 import { checkSchema } from 'express-validator'
-import { signupSchema } from '@/utils/validators'
+import { signupSchema } from '../utils/validators'
 
 const router = express.Router()
 

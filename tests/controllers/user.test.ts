@@ -5,21 +5,25 @@ import {
   deleteUserWithProfile,
   getUserById,
   getUsersByUsername,
-} from '@/controllers/user'
+} from '../../src/controllers/user'
 
-import { client as clientMock } from '@/libs/__mocks__/client'
-import { getPrivateUser, getPublicUsers, hashPassword } from '@/utils/helpers'
-import { mockedUser } from 'tests/mocks/userMocks'
+import { client as clientMock } from '../../src/libs/__mocks__/client'
+import {
+  getPrivateUser,
+  getPublicUsers,
+  hashPassword,
+} from '../../src/utils/helpers'
+import { mockedUser } from '../mocks/userMocks'
 
 describe('User controller', () => {
   beforeEach(() => {
     vi.restoreAllMocks()
   })
 
-  vi.mock('@/libs/client', async () => {
+  vi.mock('../../src/libs/client', async () => {
     const actual = await vi.importActual<
-      typeof import('@/libs/__mocks__/client')
-    >('@/libs/__mocks__/client')
+      typeof import('../../src/libs/__mocks__/client')
+    >('../../src/libs/__mocks__/client')
     return {
       ...actual,
     }

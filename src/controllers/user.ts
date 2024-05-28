@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { client } from '@/libs/client'
+import { client } from '../libs/client'
 import { handleError } from '../utils/errors'
 import {
   comparePassword,

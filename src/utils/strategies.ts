@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import OAuth2Strategy from 'passport-oauth2'
-import { client } from '@/libs/client'
+import { client } from '../libs/client'
 import { getGender } from './helpers'
 
 export const serializeUserStrategy = (

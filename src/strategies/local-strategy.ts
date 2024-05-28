@@ -1,6 +1,6 @@
 import passport from 'passport'
 import { Strategy } from 'passport-local'
-import { client } from '@/libs/client'
+import { client } from '../libs/client'
 import { comparePassword } from '../utils/helpers'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

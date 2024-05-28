@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import { validationResult } from 'express-validator'
 import { hashPassword } from '../utils/helpers'
 import { handleError } from '../utils/errors'
-import { client } from '@/libs/client'
+import { client } from '../libs/client'
 
 export const signup = async (req: Request, res: Response) => {
   const result = validationResult(req)
