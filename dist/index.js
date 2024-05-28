@@ -21,6 +21,7 @@ const client_1 = require("./libs/client");
 const middlewares_1 = require("./utils/middlewares");
 exports.app = (0, express_1.default)();
 dotenv_1.default.config();
+const port = process.env.PORT || 3000;
 exports.app.use(express_1.default.json());
 exports.app.use((0, express_session_1.default)({
     secret: process.env.SESSION_SECRET || '',
@@ -43,5 +44,5 @@ exports.app.use(middlewares_1.privateRoute);
 exports.app.use('/api/users', user_1.default);
 exports.app.use('/api/profile', profile_1.default);
 exports.app.use('/api/nuts', nut_1.default);
-exports.app.listen(process.env.PORT, () => console.log(`Server is running on port ${process.env.PORT}`));
+exports.app.listen(port, () => console.log(`Server is running on port ${port}`));
 //# sourceMappingURL=index.js.map

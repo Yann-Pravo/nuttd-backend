@@ -16,6 +16,7 @@ import { privateRoute } from './utils/middlewares'
 
 export const app = express()
 dotenv.config()
+const port = process.env.PORT || 3000
 
 app.use(express.json())
 app.use(
@@ -45,6 +46,4 @@ app.use('/api/users', userRouter)
 app.use('/api/profile', authProfile)
 app.use('/api/nuts', nutRouter)
 
-app.listen(process.env.PORT, () =>
-  console.log(`Server is running on port ${process.env.PORT}`)
-)
+app.listen(port, () => console.log(`Server is running on port ${port}`))
