@@ -8,7 +8,8 @@
     "test:unit": "vitest -c ./vitest.config.unit.ts",
     "test:coverage": "vitest -c ./vitest.config.unit.ts --coverage",
     "test:unit:ui": "vitest -c ./vitest.config.unit.ts --ui",
-    "lint": "eslint"
+    "lint": "eslint",
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",
