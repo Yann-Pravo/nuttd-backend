@@ -83,15 +83,13 @@ export const changePassword = async (req: Request, res: Response) => {
     if (!isMatchOldPassword)
       return res
         .status(400)
-        .json({ msg: 'Old password doesn‘t match with the existing one.' })
+        .json('Old password doesn‘t match with the existing one.')
 
     if (oldPassword === newPassword)
-      return res
-        .status(400)
-        .json({ msg: 'Old and new passwords are the same.' })
+      return res.status(400).json('Old and new passwords are the same.')
 
     if (newPassword !== verifyNewPassword)
-      return res.status(400).json({ msg: 'New passwords don‘t match.' })
+      return res.status(400).json('New passwords don‘t match.')
 
     const hashedNewPassword = await hashPassword(newPassword)
 
@@ -104,7 +102,6 @@ export const changePassword = async (req: Request, res: Response) => {
 
     return res.sendStatus(200)
   } catch (err) {
-    console.log(err)
     handleError(err, res)
   }
 }

@@ -6,7 +6,11 @@ export default defineConfig({
     include: ['./tests/**/*.test.ts'],
     coverage: {
       provider: 'v8',
-      exclude: ['src/libs/**', '**/.{eslint,mocha,prettier}rc.{?(c|m)js,yml}'],
+      exclude: [
+        'src/index.ts',
+        'src/libs/**',
+        '**/.{eslint,mocha,prettier}rc.{?(c|m)js,yml}',
+      ],
     },
   },
   plugins: [tsconfigPaths()],

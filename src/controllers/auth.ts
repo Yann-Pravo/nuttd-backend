@@ -29,7 +29,7 @@ export const signup = async (req: Request, res: Response) => {
 export const login = (_: Request, res: Response) => res.sendStatus(200)
 
 export const getStatus = (req: Request, res: Response) => {
-  if (req.user) return res.send(req.user)
+  if (req.user) return res.sendStatus(200)
 
   return res.sendStatus(401)
 }
