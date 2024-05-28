@@ -14,7 +14,7 @@ import './strategies/google-strategy'
 import { client } from './libs/client'
 import { privateRoute } from './utils/middlewares'
 
-export const app = express()
+const app = express()
 dotenv.config()
 const port = process.env.PORT || 3000
 

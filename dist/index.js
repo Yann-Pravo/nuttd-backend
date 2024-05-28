@@ -3,7 +3,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.app = void 0;
 const express_1 = __importDefault(require("express"));
 const express_session_1 = __importDefault(require("express-session"));
 const passport_1 = __importDefault(require("passport"));
@@ -19,11 +18,11 @@ require("./strategies/facebook-strategy");
 require("./strategies/google-strategy");
 const client_1 = require("./libs/client");
 const middlewares_1 = require("./utils/middlewares");
-exports.app = (0, express_1.default)();
+const app = (0, express_1.default)();
 dotenv_1.default.config();
 const port = process.env.PORT || 3000;
-exports.app.use(express_1.default.json());
-exports.app.use((0, express_session_1.default)({
+app.use(express_1.default.json());
+app.use((0, express_session_1.default)({
     secret: process.env.SESSION_SECRET || '',
     saveUninitialized: false,
     resave: true,
@@ -37,12 +36,12 @@ exports.app.use((0, express_session_1.default)({
         dbRecordIdFunction: undefined,
     }),
 }));
-exports.app.use(passport_1.default.initialize());
-exports.app.use(passport_1.default.session());
-exports.app.use('/api/auth', auth_1.default);
-exports.app.use(middlewares_1.privateRoute);
-exports.app.use('/api/users', user_1.default);
-exports.app.use('/api/profile', profile_1.default);
-exports.app.use('/api/nuts', nut_1.default);
-exports.app.listen(port, () => console.log(`Server is running on port ${port}`));
+app.use(passport_1.default.initialize());
+app.use(passport_1.default.session());
+app.use('/api/auth', auth_1.default);
+app.use(middlewares_1.privateRoute);
+app.use('/api/users', user_1.default);
+app.use('/api/profile', profile_1.default);
+app.use('/api/nuts', nut_1.default);
+app.listen(port, () => console.log(`Server is running on port ${port}`));
 //# sourceMappingURL=index.js.map
