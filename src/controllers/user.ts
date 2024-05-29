@@ -31,14 +31,14 @@ export const getUsersByUsername = async (req: Request, res: Response) => {
   }
 }
 
-export const getUserById = async (req: Request, res: Response) => {
-  const { userID } = req.params
+export const getUser = async (req: Request, res: Response) => {
+  const { id } = req.user
 
   try {
     const user = await client.user.findFirst({
       where: {
         id: {
-          equals: userID,
+          equals: id,
           mode: 'insensitive',
         },
       },
@@ -60,7 +60,7 @@ export const getUserById = async (req: Request, res: Response) => {
 }
 
 export const changePassword = async (req: Request, res: Response) => {
-  const { userID } = req.params
+  const { id } = req.user
 
   const { oldPassword, newPassword, verifyNewPassword } = req.body
 
@@ -68,7 +68,7 @@ export const changePassword = async (req: Request, res: Response) => {
     const existingUser = await client.user.findFirst({
       where: {
         id: {
-          equals: userID,
+          equals: id,
           mode: 'insensitive',
         },
       },
@@ -94,7 +94,7 @@ export const changePassword = async (req: Request, res: Response) => {
     const hashedNewPassword = await hashPassword(newPassword)
 
     await client.user.update({
-      where: { id: userID },
+      where: { id },
       data: {
         password: hashedNewPassword,
       },
@@ -107,15 +107,15 @@ export const changePassword = async (req: Request, res: Response) => {
 }
 
 export const deleteUserWithProfile = async (req: Request, res: Response) => {
-  const { userID } = req.params
+  const { id } = req.user
 
   try {
     const profile = await client.profile.findUnique({
-      where: { userId: userID },
+      where: { userId: id },
     })
-    if (profile) await client.profile.delete({ where: { userId: userID } })
+    if (profile) await client.profile.delete({ where: { userId: id } })
 
-    await client.user.delete({ where: { id: userID } })
+    await client.user.delete({ where: { id } })
 
     res.sendStatus(200)
   } catch (err) {

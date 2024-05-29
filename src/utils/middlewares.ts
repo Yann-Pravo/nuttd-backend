@@ -19,15 +19,3 @@ export const publicRoute = (
 
   next()
 }
-
-export const checkIsCurrentUser = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const { userID } = req.params
-
-  if (!req.user || req.user.id !== userID) return res.sendStatus(401)
-
-  next()
-}

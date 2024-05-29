@@ -3,7 +3,7 @@ import { createRequest, createResponse } from 'node-mocks-http'
 import {
   changePassword,
   deleteUserWithProfile,
-  getUserById,
+  getUser,
   getUsersByUsername,
 } from '../../src/controllers/user'
 
@@ -29,37 +29,37 @@ describe('User controller', () => {
     }
   })
 
-  test('getUserById - Should return 500 User not found', async () => {
+  test('getUser - Should return 500 User not found', async () => {
     const res = createResponse()
-    const req = createRequest({ params: { userID: '1' } })
+    const req = createRequest({ user: { id: '1' } })
 
-    await getUserById(req, res)
+    await getUser(req, res)
 
     expect(clientMock.user.findFirst).toHaveBeenCalledOnce()
     expect(res.statusCode).toBe(500)
     expect(res._getJSONData()).toEqual('User not found')
   })
 
-  test('getUserById - Should return an error', async () => {
+  test('getUser - Should return an error', async () => {
     const res = createResponse()
-    const req = createRequest({ params: { userID: '1' } })
+    const req = createRequest({ user: { id: '1' } })
 
     clientMock.user.findFirst.mockRejectedValue(new Error(''))
 
-    await getUserById(req, res)
+    await getUser(req, res)
 
     expect(clientMock.user.findFirst).toHaveBeenCalledOnce()
     expect(res.statusCode).toBe(500)
     expect(res._getJSONData()).toEqual('Something went wrong')
   })
 
-  test('getUserById - Should get user from id', async () => {
+  test('getUser - Should get user from id', async () => {
     const res = createResponse()
-    const req = createRequest({ params: { userID: '1' } })
+    const req = createRequest({ user: { id: '1' } })
 
     clientMock.user.findFirst.mockResolvedValue(mockedUser)
 
-    await getUserById(req, res)
+    await getUser(req, res)
 
     expect(clientMock.user.findFirst).toHaveBeenCalledOnce()
     expect(res.statusCode).toBe(200)
@@ -106,7 +106,7 @@ describe('User controller', () => {
   test('changePassword - Should change the user‘s password', async () => {
     const res = createResponse()
     const req = createRequest({
-      params: { userID: '1' },
+      user: { id: '1' },
       body: {
         oldPassword: mockedUser.password,
         newPassword: 'newpassword',
@@ -130,7 +130,7 @@ describe('User controller', () => {
   test('changePassword - Should not change the user‘s password', async () => {
     const res = createResponse()
     const req = createRequest({
-      params: { userID: '1' },
+      user: { id: '1' },
       body: {
         oldPassword: mockedUser.password,
         newPassword: 'newpassword',
@@ -150,7 +150,7 @@ describe('User controller', () => {
   test('changePassword - Should return an error', async () => {
     const res = createResponse()
     const req = createRequest({
-      params: { userID: '1' },
+      user: { id: '1' },
       body: {
         oldPassword: mockedUser.password,
         newPassword: 'newpassword',
@@ -171,7 +171,7 @@ describe('User controller', () => {
 
   test('deleteUserWithProfile - Should delete user', async () => {
     const res = createResponse()
-    const req = createRequest({ params: { userID: '1' } })
+    const req = createRequest({ user: { id: '1' } })
 
     clientMock.profile.findUnique.mockResolvedValue(mockedUser.profile)
 
@@ -184,7 +184,7 @@ describe('User controller', () => {
 
   test('deleteUserWithProfile - Should return an error', async () => {
     const res = createResponse()
-    const req = createRequest({ params: { userID: '1' } })
+    const req = createRequest({ user: { id: '1' } })
 
     clientMock.user.delete.mockRejectedValue(new Error(''))
 
