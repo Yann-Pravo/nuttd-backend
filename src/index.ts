@@ -19,19 +19,19 @@ const app = express()
 dotenv.config()
 const port = process.env.PORT || 3000
 
-app.use(
-  cors({
-    credentials: true,
-    origin: true,
-  })
-)
+// app.use(
+//   cors({
+//     credentials: true,
+//     origin: true,
+//   })
+// )
 
-// app.use((req, res, next) => {
-//   res.setHeader('Access-Control-Allow-Origin', '*') // Allow requests from any origin
-//   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
-//   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-//   next()
-// })
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*') // Allow requests from any origin
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+  next()
+})
 
 app.use(express.json())
 
