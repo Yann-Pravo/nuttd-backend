@@ -26,7 +26,6 @@ export default passport.use(
       ],
     },
     (accessToken, refreshToken, profile, done) => {
-      console.log('PROFILLLE', { accessToken, refreshToken })
       const {
         id,
         username,

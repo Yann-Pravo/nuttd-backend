@@ -23,7 +23,6 @@ exports.default = passport_1.default.use(new passport_facebook_1.Strategy({
     ],
 }, (accessToken, refreshToken, profile, done) => {
     var _a, _b;
-    console.log('PROFILLLE', { accessToken, refreshToken });
     const { id, username, displayName, emails, photos, provider, gender, birthday, _json, } = profile;
     (0, strategies_1.verifyStrategy)(accessToken, refreshToken, {
         id,

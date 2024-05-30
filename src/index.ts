@@ -2,6 +2,7 @@ import express from 'express'
 import session from 'express-session'
 import passport from 'passport'
 import dotenv from 'dotenv'
+import cors from 'cors'
 import { PrismaSessionStore } from '@quixo3/prisma-session-store'
 import userRouter from './routes/user'
 import authProfile from './routes/profile'
@@ -18,7 +19,40 @@ const app = express()
 dotenv.config()
 const port = process.env.PORT || 3000
 
+app.use(
+  cors({
+    credentials: true,
+    origin: true,
+  })
+)
+
+// app.use((req, res, next) => {
+//   res.setHeader('Access-Control-Allow-Origin', '*') // Allow requests from any origin
+//   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
+//   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+//   next()
+// })
+
 app.use(express.json())
+
+// if (process.env.NODE_ENV === "development"){
+//   app.use(
+//     cors({
+//       origin: "https://localhost:3000",
+//       credentials: true,
+//     })
+//   );
+// }
+
+// if (process.env.NODE_ENV === "production"){
+//   app.use(
+//     cors({
+//       origin: "https://xyz.onrender.com",
+//       credentials: true,
+//     })
+//   );
+// }
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET || '',
