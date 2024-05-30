@@ -36,8 +36,6 @@ app.use((0, express_session_1.default)({
     resave: true,
     cookie: {
         maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-        secure: true,
-        httpOnly: true,
         sameSite: 'none',
     },
     store: new prisma_session_store_1.PrismaSessionStore(client_1.client, {
