@@ -5,7 +5,7 @@ export const privateRoute = (
   res: Response,
   next: NextFunction
 ) => {
-  if (!req.user) return res.sendStatus(401)
+  if (!req.isAuthenticated()) return res.sendStatus(401)
 
   next()
 }

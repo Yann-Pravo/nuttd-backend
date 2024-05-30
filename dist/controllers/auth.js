@@ -33,9 +33,7 @@ exports.signup = signup;
 const login = (_, res) => res.sendStatus(200);
 exports.login = login;
 const getStatus = (req, res) => {
-    if (req.user)
-        return res.sendStatus(200);
-    return res.sendStatus(401);
+    return res.sendStatus(200);
 };
 exports.getStatus = getStatus;
 const logout = (req, res) => {

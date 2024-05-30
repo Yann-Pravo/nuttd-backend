@@ -22,59 +22,14 @@ const middlewares_1 = require("./utils/middlewares");
 const app = (0, express_1.default)();
 dotenv_1.default.config();
 const port = process.env.PORT || 3000;
-// app.use(
-//   cors({
-//     credentials: true,
-//     origin: true,
-//   })
-// )
 const corsOptions = {
-    origin: ['http://localhost:5173'],
+    origin: process.env.FRONTEND_URL,
     credentials: true,
-    // optionsSuccessStatus: 200,
+    optionsSuccessStatus: 200,
 };
-// Apply CORS middleware first
 app.use((0, cors_1.default)(corsOptions));
-// Debug middleware to log headers
-app.use((req, res, next) => {
-    console.log('Request Headers:', req.headers);
-    console.log('Response Headers:', res.header);
-    next();
-});
-// Handle preflight requests
 app.options('*', (0, cors_1.default)(corsOptions));
-// app.use((req, res, next) => {
-//   res.header('Access-Control-Allow-Origin', '*')
-//   res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE')
-//   res.header(
-//     'Access-Control-Allow-Headers',
-//     'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-//   )
-//   res.header('Access-Control-Allow-Credentials', 'true')
-//   // Intercept OPTIONS method
-//   if (req.method === 'OPTIONS') {
-//     res.sendStatus(204)
-//   } else {
-//     next()
-//   }
-// })
 app.use(express_1.default.json());
-// if (process.env.NODE_ENV === "development"){
-//   app.use(
-//     cors({
-//       origin: "https://localhost:3000",
-//       credentials: true,
-//     })
-//   );
-// }
-// if (process.env.NODE_ENV === "production"){
-//   app.use(
-//     cors({
-//       origin: "https://xyz.onrender.com",
-//       credentials: true,
-//     })
-//   );
-// }
 app.use((0, express_session_1.default)({
     secret: process.env.SESSION_SECRET || '',
     saveUninitialized: false,

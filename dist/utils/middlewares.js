@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.publicRoute = exports.privateRoute = void 0;
 const privateRoute = (req, res, next) => {
-    if (!req.user)
+    if (!req.isAuthenticated())
         return res.sendStatus(401);
     next();
 };
