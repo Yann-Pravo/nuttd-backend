@@ -38,6 +38,9 @@ app.use(
     resave: true,
     cookie: {
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+      secure: true,
+      httpOnly: true,
+      sameSite: 'none',
     },
     store: new PrismaSessionStore(client, {
       // store user sessions in the db
