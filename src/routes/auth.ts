@@ -46,7 +46,7 @@ router.get(
   passport.authenticate(['google']),
   redirectThirdParty
 )
-router.get('/status', privateRoute, getStatus)
+router.get('/status', getStatus)
 router.post('/logout', privateRoute, logout)
 
 export default router

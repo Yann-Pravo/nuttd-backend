@@ -20,7 +20,7 @@ router.get('/facebook', middlewares_1.publicRoute, passport_1.default.authentica
 router.get('/facebook/redirect', middlewares_1.publicRoute, passport_1.default.authenticate('facebook'), auth_1.redirectThirdParty);
 router.get('/google', middlewares_1.publicRoute, passport_1.default.authenticate(['google'], { scope: ['profile', 'email'] }));
 router.get('/google/redirect', middlewares_1.publicRoute, passport_1.default.authenticate(['google']), auth_1.redirectThirdParty);
-router.get('/status', middlewares_1.privateRoute, auth_1.getStatus);
+router.get('/status', auth_1.getStatus);
 router.post('/logout', middlewares_1.privateRoute, auth_1.logout);
 exports.default = router;
 //# sourceMappingURL=auth.js.map

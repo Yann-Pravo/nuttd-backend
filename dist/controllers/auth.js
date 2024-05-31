@@ -33,7 +33,9 @@ exports.signup = signup;
 const login = (_, res) => res.sendStatus(200);
 exports.login = login;
 const getStatus = (req, res) => {
-    return res.sendStatus(200);
+    if (req.isAuthenticated())
+        return res.send('ok');
+    return res.send('nok');
 };
 exports.getStatus = getStatus;
 const logout = (req, res) => {

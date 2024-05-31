@@ -29,7 +29,9 @@ export const signup = async (req: Request, res: Response) => {
 export const login = (_: Request, res: Response) => res.sendStatus(200)
 
 export const getStatus = (req: Request, res: Response) => {
-  return res.sendStatus(200)
+  if (req.isAuthenticated()) return res.send('ok')
+
+  return res.send('nok')
 }
 
 export const logout = (req: Request, res: Response) => {
