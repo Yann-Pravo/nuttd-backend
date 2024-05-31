@@ -38,8 +38,8 @@ app.use(
     resave: true,
     cookie: {
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-      secure: process.env.NODE_ENV === 'production' ? true : false,
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      secure: process.env.VERCEL_ENV === 'production' ? true : false,
+      sameSite: process.env.VERCEL_ENV === 'production' ? 'none' : 'lax',
     },
     store: new PrismaSessionStore(client, {
       // store user sessions in the db
