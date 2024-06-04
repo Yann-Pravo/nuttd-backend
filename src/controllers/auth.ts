@@ -72,7 +72,7 @@ export const logout = async (req: Request, res: Response) => {
 }
 
 export const refreshToken = async (req: Request, res: Response) => {
-  const { refreshToken } = req.cookies
+  const { refreshToken } = req.body
 
   if (!refreshToken) return res.status(403).send({ error: 'No token given' })
 
