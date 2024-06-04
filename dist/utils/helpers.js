@@ -3,9 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateUsername = exports.getGender = exports.getPublicNuts = exports.getPublicNut = exports.getPublicUsers = exports.getPublicUser = exports.getPrivateUser = exports.comparePassword = exports.hashPassword = void 0;
+exports.excludeExpiredTokens = exports.generateRefreshToken = exports.generateAccessToken = exports.generateUsername = exports.getGender = exports.getPublicNuts = exports.getPublicNut = exports.getPublicUsers = exports.getPublicUser = exports.getPrivateUser = exports.comparePassword = exports.hashPassword = void 0;
 const client_1 = require("@prisma/client");
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const saltRounds = 10;
 const hashPassword = (password) => {
     const salt = bcrypt_1.default.genSaltSync(saltRounds);
@@ -54,4 +55,19 @@ const getGender = (gender) => {
 exports.getGender = getGender;
 const generateUsername = (name) => `${name.toLowerCase().replace(/ /g, '')}${Math.floor(Math.random() * 100)}`;
 exports.generateUsername = generateUsername;
+const generateAccessToken = (user) => {
+    return jsonwebtoken_1.default.sign({ id: user.id, email: user.email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+};
+exports.generateAccessToken = generateAccessToken;
+const generateRefreshToken = (user, rememberMe) => {
+    return jsonwebtoken_1.default.sign({ id: user.id, email: user.email }, process.env.REFRESH_TOKEN_SECRET, {
+        expiresIn: rememberMe ? '7d' : '1d',
+    });
+};
+exports.generateRefreshToken = generateRefreshToken;
+const excludeExpiredTokens = (tokens) => tokens.filter((token) => {
+    const decoded = jsonwebtoken_1.default.decode(token);
+    return decoded && decoded.exp && new Date(decoded.exp * 1000) > new Date();
+});
+exports.excludeExpiredTokens = excludeExpiredTokens;
 //# sourceMappingURL=helpers.js.map

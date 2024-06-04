@@ -1,21 +1,21 @@
 import express from 'express'
 import passport from 'passport'
 import {
-  login,
-  getStatus,
   logout,
   signup,
   redirectThirdParty,
+  login,
+  refreshToken,
 } from '../controllers/auth'
-import { privateRoute, publicRoute } from '../utils/middlewares'
+import { publicRoute } from '../utils/middlewares'
 import { checkSchema } from 'express-validator'
 import { signupSchema } from '../utils/validators'
 
 const router = express.Router()
 
 router.post('/signup', publicRoute, checkSchema(signupSchema), signup)
-router.post('/login', publicRoute, passport.authenticate(['local']), login)
-router.get('/discord', publicRoute, passport.authenticate(['discord']))
+router.post('/login', passport.authenticate('local'), login)
+router.get('/discord', publicRoute, passport.authenticate('discord'))
 router.get(
   '/discord/redirect',
   publicRoute,
@@ -46,7 +46,11 @@ router.get(
   passport.authenticate(['google']),
   redirectThirdParty
 )
-router.get('/status', privateRoute, getStatus)
-router.post('/logout', privateRoute, logout)
+router.delete(
+  '/logout',
+  passport.authenticate('jwt', { session: false }),
+  logout
+)
+router.post('/refresh', refreshToken)
 
 export default router

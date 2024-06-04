@@ -12,44 +12,31 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const passport_1 = __importDefault(require("passport"));
-const passport_local_1 = require("passport-local");
+const passport_jwt_1 = require("passport-jwt");
 const client_1 = require("../libs/client");
-const helpers_1 = require("../utils/helpers");
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-passport_1.default.serializeUser((user, done) => {
-    done(null, user.id);
-});
-passport_1.default.deserializeUser((id, done) => __awaiter(void 0, void 0, void 0, function* () {
+const opts = {
+    jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey: process.env.ACCESS_TOKEN_SECRET,
+};
+exports.default = passport_1.default.use(new passport_jwt_1.Strategy(opts, (token, done) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const findUser = yield client_1.client.user.findUnique({ where: { id } });
-        if (!findUser)
-            return done('User Not Found', false);
-        done(null, findUser);
-    }
-    catch (err) {
-        done(err, null);
-    }
-}));
-exports.default = passport_1.default.use(new passport_local_1.Strategy({ usernameField: 'email' }, (email, password, done) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
+        if (!token || !token.email || !token.id)
+            return done('Token is missing');
         const findUser = yield client_1.client.user.findFirst({
             where: {
-                email: {
-                    equals: email,
+                id: {
+                    equals: token.id,
                     mode: 'insensitive',
                 },
             },
         });
-        if (!findUser)
-            return done('Invalid credentials', false);
-        const isMatch = yield (0, helpers_1.comparePassword)(password, findUser.password || '');
-        if (!isMatch)
-            return done('Invalid credentials', false);
+        // if (!findUser.refreshToken.includes(token)) return done('Invalid session')
         done(null, findUser);
     }
     catch (err) {
         done(err, false);
     }
 })));
-//# sourceMappingURL=local-strategy.js.map
+//# sourceMappingURL=jwt-strategy.js.map

@@ -24,27 +24,22 @@ enum Gender {
   FEMALE
 }
 
-model Session {
-  id          String   @id
-  sid         String   @unique
-  data        String
-  expiresAt   DateTime
-}
-
 model User {
-  id          String    @id @default(cuid())
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  email       String?   @unique
-  password    String?
-  username    String    @unique
-  followers   User[]    @relation("UserFollows")
-  following   User[]    @relation("UserFollows")
-  guilds      Guild[]
-  nuts        Nut[]
-  role        Role      @default(USER)
-  profile     Profile?
-  thirdParty  ThirdParty?
+  id            String    @id @default(cuid())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  refreshToken  String[]
+  rememberMe    Boolean   @default(false)
+  email         String?   @unique
+  password      String?
+  username      String    @unique
+  followers     User[]    @relation("UserFollows")
+  following     User[]    @relation("UserFollows")
+  guilds        Guild[]
+  nuts          Nut[]
+  role          Role      @default(USER)
+  profile       Profile?
+  thirdParty    ThirdParty?
 }
 
 model ThirdParty {

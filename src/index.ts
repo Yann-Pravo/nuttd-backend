@@ -1,18 +1,18 @@
 import express from 'express'
 import session from 'express-session'
+import cookieParser from 'cookie-parser'
 import passport from 'passport'
 import dotenv from 'dotenv'
 import cors from 'cors'
-import { PrismaSessionStore } from '@quixo3/prisma-session-store'
 import userRouter from './routes/user'
 import authProfile from './routes/profile'
 import nutRouter from './routes/nut'
 import authRouter from './routes/auth'
 import './strategies/local-strategy'
+import './strategies/jwt-strategy'
 import './strategies/discord-strategy'
 import './strategies/facebook-strategy'
 import './strategies/google-strategy'
-import { client } from './libs/client'
 import { privateRoute } from './utils/middlewares'
 
 const app = express()
@@ -30,23 +30,24 @@ app.use(cors(corsOptions))
 app.options('*', cors(corsOptions))
 
 app.use(express.json())
+app.use(cookieParser())
 
 app.use(
   session({
     secret: process.env.SESSION_SECRET || '',
     saveUninitialized: false,
     resave: true,
-    cookie: {
-      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-      secure: process.env.VERCEL_ENV !== 'production' ? true : false,
-      sameSite: process.env.VERCEL_ENV !== 'production' ? 'none' : 'lax',
-    },
-    store: new PrismaSessionStore(client, {
-      // store user sessions in the db
-      checkPeriod: 2 * 60 * 1000, //2 min
-      dbRecordIdIsSessionId: true,
-      dbRecordIdFunction: undefined,
-    }),
+    // cookie: {
+    //   maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+    //   secure: process.env.VERCEL_ENV !== 'production' ? true : false,
+    //   sameSite: process.env.VERCEL_ENV !== 'production' ? 'none' : 'lax',
+    // },
+    // store: new PrismaSessionStore(client, {
+    //   // store user sessions in the db
+    //   checkPeriod: 2 * 60 * 1000, //2 min
+    //   dbRecordIdIsSessionId: true,
+    //   dbRecordIdFunction: undefined,
+    // }),
   })
 )
 

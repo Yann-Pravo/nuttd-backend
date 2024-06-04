@@ -11,7 +11,7 @@ passport.serializeUser((user: any, done) => {
 passport.deserializeUser(async (id: string, done) => {
   try {
     const findUser = await client.user.findUnique({ where: { id } })
-    if (!findUser) throw new Error('User Not Found')
+    if (!findUser) return done('User Not Found', false)
     done(null, findUser)
   } catch (err) {
     done(err, null)
@@ -29,10 +29,10 @@ export default passport.use(
           },
         },
       })
-      if (!findUser) throw new Error('Invalid credentials')
+      if (!findUser) return done('Invalid credentials', false)
 
       const isMatch = await comparePassword(password, findUser.password || '')
-      if (!isMatch) throw new Error('Invalid credentials')
+      if (!isMatch) return done('Invalid credentials', false)
 
       done(null, findUser)
     } catch (err) {

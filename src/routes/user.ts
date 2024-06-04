@@ -6,11 +6,12 @@ import {
   changePassword,
   deleteUserWithProfile,
 } from '../controllers/user'
+import passport from 'passport'
 
 const router = Router()
 
 router.get('/list', getUsersByUsername)
-router.get('/me', getUser)
+router.get('/me', passport.authenticate('jwt', { session: false }), getUser)
 router.put('/me/password', changePassword)
 router.delete('/me', deleteUserWithProfile)
 

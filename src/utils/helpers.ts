@@ -1,5 +1,6 @@
 import { Gender, Guild, Nut, Profile, User } from '@prisma/client'
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 
 interface FullUser extends User {
   profile: Profile | null
@@ -62,3 +63,27 @@ export const getGender = (gender?: string) => {
 
 export const generateUsername = (name: string) =>
   `${name.toLowerCase().replace(/ /g, '')}${Math.floor(Math.random() * 100)}`
+
+export const generateAccessToken = (user: User) => {
+  return jwt.sign(
+    { id: user.id, email: user.email },
+    process.env.ACCESS_TOKEN_SECRET,
+    { expiresIn: '15m' }
+  )
+}
+
+export const generateRefreshToken = (user: User, rememberMe?: boolean) => {
+  return jwt.sign(
+    { id: user.id, email: user.email },
+    process.env.REFRESH_TOKEN_SECRET,
+    {
+      expiresIn: rememberMe ? '7d' : '1d',
+    }
+  )
+}
+
+export const excludeExpiredTokens = (tokens: string[]) =>
+  tokens.filter((token) => {
+    const decoded = jwt.decode(token) as jwt.JwtPayload
+    return decoded && decoded.exp && new Date(decoded.exp * 1000) > new Date()
+  })
