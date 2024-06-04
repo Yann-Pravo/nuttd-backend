@@ -50,8 +50,7 @@ export const login = async (req: Request, res: Response) => {
       },
     })
 
-    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true })
-    res.send({ accessToken })
+    res.send({ accessToken, refreshToken })
   } catch (err) {
     handleError(err, res)
   }
@@ -59,7 +58,6 @@ export const login = async (req: Request, res: Response) => {
 
 export const logout = async (req: Request, res: Response) => {
   try {
-    console.log('logout')
     await client.user.update({
       where: { id: req.user.id },
       data: { refreshToken: [] },
@@ -120,6 +118,10 @@ export const refreshToken = async (req: Request, res: Response) => {
   } catch (err) {
     handleError(err, res)
   }
+}
+
+export const getStatus = (req: Request, res: Response) => {
+  res.send({ isConnected: Boolean(req.user) })
 }
 
 export const redirectThirdParty = (_: Request, res: Response) =>

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.redirectThirdParty = exports.refreshToken = exports.logout = exports.login = exports.signup = void 0;
+exports.redirectThirdParty = exports.getStatus = exports.refreshToken = exports.logout = exports.login = exports.signup = void 0;
 const express_validator_1 = require("express-validator");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const helpers_1 = require("../utils/helpers");
@@ -48,8 +48,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 ],
             },
         });
-        res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
-        res.send({ accessToken });
+        res.send({ accessToken, refreshToken });
     }
     catch (err) {
         (0, errors_1.handleError)(err, res);
@@ -58,7 +57,6 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.login = login;
 const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log('logout');
         yield client_1.client.user.update({
             where: { id: req.user.id },
             data: { refreshToken: [] },
@@ -112,6 +110,10 @@ const refreshToken = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.refreshToken = refreshToken;
+const getStatus = (req, res) => {
+    res.send({ isConnected: Boolean(req.user) });
+};
+exports.getStatus = getStatus;
 const redirectThirdParty = (_, res) => res.sendStatus(200);
 exports.redirectThirdParty = redirectThirdParty;
 //# sourceMappingURL=auth.js.map

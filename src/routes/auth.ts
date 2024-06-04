@@ -6,6 +6,7 @@ import {
   redirectThirdParty,
   login,
   refreshToken,
+  getStatus,
 } from '../controllers/auth'
 import { publicRoute } from '../utils/middlewares'
 import { checkSchema } from 'express-validator'
@@ -52,5 +53,6 @@ router.delete(
   logout
 )
 router.post('/refresh', refreshToken)
+router.get('/status', getStatus)
 
 export default router

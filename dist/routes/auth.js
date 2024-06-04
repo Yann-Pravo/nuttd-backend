@@ -22,5 +22,6 @@ router.get('/google', middlewares_1.publicRoute, passport_1.default.authenticate
 router.get('/google/redirect', middlewares_1.publicRoute, passport_1.default.authenticate(['google']), auth_1.redirectThirdParty);
 router.delete('/logout', passport_1.default.authenticate('jwt', { session: false }), auth_1.logout);
 router.post('/refresh', auth_1.refreshToken);
+router.get('/status', auth_1.getStatus);
 exports.default = router;
 //# sourceMappingURL=auth.js.map
