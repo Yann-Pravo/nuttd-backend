@@ -19,33 +19,16 @@ require("./strategies/discord-strategy");
 require("./strategies/facebook-strategy");
 require("./strategies/google-strategy");
 const middlewares_1 = require("./utils/middlewares");
+const port = process.env.PORT || 3000;
 const app = (0, express_1.default)();
 dotenv_1.default.config();
-const port = process.env.PORT || 3000;
-const corsOptions = {
-    origin: process.env.FRONTEND_URL,
-    credentials: true,
-    optionsSuccessStatus: 200,
-};
-app.use((0, cors_1.default)(corsOptions));
-app.options('*', (0, cors_1.default)(corsOptions));
+app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use((0, cookie_parser_1.default)());
 app.use((0, express_session_1.default)({
     secret: process.env.SESSION_SECRET || '',
     saveUninitialized: false,
     resave: true,
-    // cookie: {
-    //   maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-    //   secure: process.env.VERCEL_ENV !== 'production' ? true : false,
-    //   sameSite: process.env.VERCEL_ENV !== 'production' ? 'none' : 'lax',
-    // },
-    // store: new PrismaSessionStore(client, {
-    //   // store user sessions in the db
-    //   checkPeriod: 2 * 60 * 1000, //2 min
-    //   dbRecordIdIsSessionId: true,
-    //   dbRecordIdFunction: undefined,
-    // }),
 }));
 app.use(passport_1.default.initialize());
 app.use(passport_1.default.session());

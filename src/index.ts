@@ -15,19 +15,12 @@ import './strategies/facebook-strategy'
 import './strategies/google-strategy'
 import { privateRoute } from './utils/middlewares'
 
-const app = express()
-dotenv.config()
 const port = process.env.PORT || 3000
 
-const corsOptions = {
-  origin: process.env.FRONTEND_URL,
-  credentials: true,
-  optionsSuccessStatus: 200,
-}
+const app = express()
+dotenv.config()
 
-app.use(cors(corsOptions))
-
-app.options('*', cors(corsOptions))
+app.use(cors())
 
 app.use(express.json())
 app.use(cookieParser())
@@ -37,17 +30,6 @@ app.use(
     secret: process.env.SESSION_SECRET || '',
     saveUninitialized: false,
     resave: true,
-    // cookie: {
-    //   maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-    //   secure: process.env.VERCEL_ENV !== 'production' ? true : false,
-    //   sameSite: process.env.VERCEL_ENV !== 'production' ? 'none' : 'lax',
-    // },
-    // store: new PrismaSessionStore(client, {
-    //   // store user sessions in the db
-    //   checkPeriod: 2 * 60 * 1000, //2 min
-    //   dbRecordIdIsSessionId: true,
-    //   dbRecordIdFunction: undefined,
-    // }),
   })
 )
 
