@@ -20,8 +20,14 @@ const port = process.env.PORT || 3000
 const app = express()
 dotenv.config()
 
-app.use(cors())
-app.options('*', cors())
+const corsOptions = {
+  origin: process.env.FRONTEND_URL,
+  // credentials: true,
+  // optionsSuccessStatus: 200,
+}
+
+app.use(cors(corsOptions))
+app.options('*', cors(corsOptions))
 
 app.use(express.json())
 app.use(cookieParser())
@@ -30,7 +36,7 @@ app.use(
   session({
     secret: process.env.SESSION_SECRET || '',
     saveUninitialized: false,
-    resave: true,
+    resave: false,
   })
 )
 

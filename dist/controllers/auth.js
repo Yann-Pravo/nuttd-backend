@@ -90,7 +90,7 @@ const refreshToken = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             const newAccessToken = (0, helpers_1.generateAccessToken)(user);
             const newRefreshToken = (0, helpers_1.generateRefreshToken)(user, user.rememberMe);
             yield client_1.client.user.update({
-                where: { id: req.user.id },
+                where: { id: user.id },
                 data: {
                     refreshToken: [
                         ...(0, helpers_1.excludeExpiredTokens)(user.refreshToken),
@@ -98,11 +98,7 @@ const refreshToken = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                     ],
                 },
             });
-            res.cookie('refreshToken', refreshToken, {
-                httpOnly: true,
-                secure: true,
-            });
-            res.json({ accessToken: newAccessToken });
+            res.json({ accessToken: newAccessToken, refreshToken: newRefreshToken });
         }));
     }
     catch (err) {
@@ -111,7 +107,19 @@ const refreshToken = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 });
 exports.refreshToken = refreshToken;
 const getStatus = (req, res) => {
-    res.send({ isConnected: Boolean(req.user) });
+    var _a;
+    const token = (_a = req.header('Authorization')) === null || _a === void 0 ? void 0 : _a.replace('Bearer ', '');
+    try {
+        if (!token) {
+            throw new Error();
+        }
+        const verified = jsonwebtoken_1.default.verify(token, process.env.ACCESS_TOKEN_SECRET);
+        req.user = verified;
+        res.send({ isConnected: Boolean(verified) });
+    }
+    catch (err) {
+        res.send({ isConnected: false });
+    }
 };
 exports.getStatus = getStatus;
 const redirectThirdParty = (_, res) => res.sendStatus(200);

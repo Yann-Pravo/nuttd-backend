@@ -99,7 +99,7 @@ export const refreshToken = async (req: Request, res: Response) => {
         const newRefreshToken = generateRefreshToken(user, user.rememberMe)
 
         await client.user.update({
-          where: { id: req.user.id },
+          where: { id: user.id },
           data: {
             refreshToken: [
               ...excludeExpiredTokens(user.refreshToken),
@@ -108,11 +108,7 @@ export const refreshToken = async (req: Request, res: Response) => {
           },
         })
 
-        res.cookie('refreshToken', refreshToken, {
-          httpOnly: true,
-          secure: true,
-        })
-        res.json({ accessToken: newAccessToken })
+        res.json({ accessToken: newAccessToken, refreshToken: newRefreshToken })
       }
     )
   } catch (err) {
@@ -121,7 +117,19 @@ export const refreshToken = async (req: Request, res: Response) => {
 }
 
 export const getStatus = (req: Request, res: Response) => {
-  res.send({ isConnected: Boolean(req.user) })
+  const token = req.header('Authorization')?.replace('Bearer ', '')
+
+  try {
+    if (!token) {
+      throw new Error()
+    }
+
+    const verified = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
+    req.user = verified as User
+    res.send({ isConnected: Boolean(verified) })
+  } catch (err) {
+    res.send({ isConnected: false })
+  }
 }
 
 export const redirectThirdParty = (_: Request, res: Response) =>
