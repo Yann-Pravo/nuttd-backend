@@ -27,7 +27,7 @@ export const signup = async (req: Request, res: Response) => {
       },
     })
 
-    return res.status(201)
+    return res.sendStatus(201)
   } catch (err) {
     return handleError(err, res)
   }

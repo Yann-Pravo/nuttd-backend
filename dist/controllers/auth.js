@@ -27,7 +27,7 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         yield client_1.client.user.create({
             data: Object.assign(Object.assign({}, req.body), { username: req.body.username, email: req.body.email.toLowerCase(), password: hashedPassword }),
         });
-        return res.status(201);
+        return res.sendStatus(201);
     }
     catch (err) {
         return (0, errors_1.handleError)(err, res);
