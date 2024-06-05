@@ -24,8 +24,6 @@ const app = (0, express_1.default)();
 dotenv_1.default.config();
 const corsOptions = {
     origin: process.env.FRONTEND_URL,
-    // credentials: true,
-    // optionsSuccessStatus: 200,
 };
 app.use((0, cors_1.default)(corsOptions));
 app.options('*', (0, cors_1.default)(corsOptions));
