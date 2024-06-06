@@ -20,8 +20,7 @@ const getPrivateUser = (user) => {
     return {
         id,
         email,
-        displayName: (profile === null || profile === void 0 ? void 0 : profile.displayName) || '',
-        birthday: profile === null || profile === void 0 ? void 0 : profile.birthday,
+        profile,
         followers,
         following,
         guilds,

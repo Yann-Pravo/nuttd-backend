@@ -26,8 +26,7 @@ export const getPrivateUser = (user: FullUser) => {
   return {
     id,
     email,
-    displayName: profile?.displayName || '',
-    birthday: profile?.birthday,
+    profile,
     followers,
     following,
     guilds,
