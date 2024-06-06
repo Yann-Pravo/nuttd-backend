@@ -28,7 +28,6 @@ export const verifyStrategy = async (
   refreshToken: string,
   profile: {
     id: string
-    username: string
     displayName: string
     email: string
     avatar: string
@@ -38,16 +37,7 @@ export const verifyStrategy = async (
   },
   done: OAuth2Strategy.VerifyCallback
 ) => {
-  const {
-    id,
-    username,
-    displayName,
-    email,
-    avatar,
-    gender,
-    birthday,
-    provider,
-  } = profile
+  const { id, displayName, email, avatar, gender, birthday, provider } = profile
   let findUser
   try {
     const findThirdParty = await client.thirdParty.findUnique({
@@ -66,7 +56,6 @@ export const verifyStrategy = async (
     if (!findUser) {
       const newUser = await client.user.create({
         data: {
-          username,
           email: email.toLowerCase(),
           thirdParty: {
             create: {

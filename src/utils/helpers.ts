@@ -21,12 +21,10 @@ export const comparePassword = (plain: string, hashed: string) =>
   bcrypt.compareSync(plain, hashed)
 
 export const getPrivateUser = (user: FullUser) => {
-  const { id, username, email, profile, followers, following, guilds, nuts } =
-    user
+  const { id, email, profile, followers, following, guilds, nuts } = user
 
   return {
     id,
-    username,
     email,
     displayName: profile?.displayName || '',
     birthday: profile?.birthday,
@@ -37,13 +35,13 @@ export const getPrivateUser = (user: FullUser) => {
   }
 }
 
-export const getPublicUser = (user: User) => {
-  const { id, username } = user
+export const getPublicUser = (user: Pick<FullUser, 'id' | 'profile'>) => {
+  const { id, profile } = user
 
-  return { id, username }
+  return { id, displayName: profile?.displayName || '' }
 }
 
-export const getPublicUsers = (users: User[]) =>
+export const getPublicUsers = (users: Pick<FullUser, 'id' | 'profile'>[]) =>
   users.map((user) => getPublicUser(user))
 
 export const getPublicNut = (nut: Nut) => {
@@ -60,9 +58,6 @@ export const getGender = (gender?: string) => {
   if (gender === 'male') return Gender.MALE
   if (gender === 'female') return Gender.FEMALE
 }
-
-export const generateUsername = (name: string) =>
-  `${name.toLowerCase().replace(/ /g, '')}${Math.floor(Math.random() * 100)}`
 
 export const generateAccessToken = (user: User) => {
   return jwt.sign(

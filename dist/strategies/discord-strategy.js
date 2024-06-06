@@ -17,8 +17,7 @@ exports.default = passport_1.default.use(new passport_discord_1.Strategy({
     const { id, username, global_name, email, avatar, provider } = profile;
     (0, strategies_1.verifyStrategy)(accessToken, refreshToken, {
         id,
-        username,
-        displayName: global_name || '',
+        displayName: global_name || username || '',
         email: email || '',
         avatar: avatar || '',
         provider,

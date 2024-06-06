@@ -20,10 +20,14 @@ const getUsersByUsername = (req, res) => __awaiter(void 0, void 0, void 0, funct
     try {
         const users = yield client_1.client.user.findMany({
             take: 10,
-            where: {
-                username: {
-                    contains: filter,
-                    mode: 'insensitive',
+            include: {
+                profile: {
+                    where: {
+                        displayName: {
+                            contains: filter,
+                            mode: 'insensitive',
+                        },
+                    },
                 },
             },
         });

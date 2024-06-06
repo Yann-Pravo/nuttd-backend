@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.excludeExpiredTokens = exports.generateRefreshToken = exports.generateAccessToken = exports.generateUsername = exports.getGender = exports.getPublicNuts = exports.getPublicNut = exports.getPublicUsers = exports.getPublicUser = exports.getPrivateUser = exports.comparePassword = exports.hashPassword = void 0;
+exports.excludeExpiredTokens = exports.generateRefreshToken = exports.generateAccessToken = exports.getGender = exports.getPublicNuts = exports.getPublicNut = exports.getPublicUsers = exports.getPublicUser = exports.getPrivateUser = exports.comparePassword = exports.hashPassword = void 0;
 const client_1 = require("@prisma/client");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -16,10 +16,9 @@ exports.hashPassword = hashPassword;
 const comparePassword = (plain, hashed) => bcrypt_1.default.compareSync(plain, hashed);
 exports.comparePassword = comparePassword;
 const getPrivateUser = (user) => {
-    const { id, username, email, profile, followers, following, guilds, nuts } = user;
+    const { id, email, profile, followers, following, guilds, nuts } = user;
     return {
         id,
-        username,
         email,
         displayName: (profile === null || profile === void 0 ? void 0 : profile.displayName) || '',
         birthday: profile === null || profile === void 0 ? void 0 : profile.birthday,
@@ -31,8 +30,8 @@ const getPrivateUser = (user) => {
 };
 exports.getPrivateUser = getPrivateUser;
 const getPublicUser = (user) => {
-    const { id, username } = user;
-    return { id, username };
+    const { id, profile } = user;
+    return { id, displayName: (profile === null || profile === void 0 ? void 0 : profile.displayName) || '' };
 };
 exports.getPublicUser = getPublicUser;
 const getPublicUsers = (users) => users.map((user) => (0, exports.getPublicUser)(user));
@@ -53,8 +52,6 @@ const getGender = (gender) => {
         return client_1.Gender.FEMALE;
 };
 exports.getGender = getGender;
-const generateUsername = (name) => `${name.toLowerCase().replace(/ /g, '')}${Math.floor(Math.random() * 100)}`;
-exports.generateUsername = generateUsername;
 const generateAccessToken = (user) => {
     return jsonwebtoken_1.default.sign({ id: user.id, email: user.email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
 };

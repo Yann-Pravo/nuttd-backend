@@ -24,8 +24,7 @@ export default passport.use(
         refreshToken,
         {
           id,
-          username,
-          displayName: global_name || '',
+          displayName: global_name || username || '',
           email: email || '',
           avatar: avatar || '',
           provider,

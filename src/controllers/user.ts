@@ -17,10 +17,14 @@ export const getUsersByUsername = async (req: Request, res: Response) => {
   try {
     const users = await client.user.findMany({
       take: 10,
-      where: {
-        username: {
-          contains: filter,
-          mode: 'insensitive',
+      include: {
+        profile: {
+          where: {
+            displayName: {
+              contains: filter,
+              mode: 'insensitive',
+            },
+          },
         },
       },
     })

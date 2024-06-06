@@ -22,6 +22,8 @@ enum Role {
 enum Gender {
   MALE
   FEMALE
+  NON_BINARY
+  PREFER_NOT_TO_SAY
 }
 
 model User {
@@ -32,7 +34,6 @@ model User {
   rememberMe    Boolean   @default(false)
   email         String?   @unique
   password      String?
-  username      String    @unique
   followers     User[]    @relation("UserFollows")
   following     User[]    @relation("UserFollows")
   guilds        Guild[]

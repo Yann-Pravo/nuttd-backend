@@ -29,7 +29,7 @@ const deserializeUserStrategy = (id, done) => __awaiter(void 0, void 0, void 0, 
 });
 exports.deserializeUserStrategy = deserializeUserStrategy;
 const verifyStrategy = (accessToken, refreshToken, profile, done) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id, username, displayName, email, avatar, gender, birthday, provider, } = profile;
+    const { id, displayName, email, avatar, gender, birthday, provider } = profile;
     let findUser;
     try {
         const findThirdParty = yield client_1.client.thirdParty.findUnique({
@@ -48,7 +48,6 @@ const verifyStrategy = (accessToken, refreshToken, profile, done) => __awaiter(v
         if (!findUser) {
             const newUser = yield client_1.client.user.create({
                 data: {
-                    username,
                     email: email.toLowerCase(),
                     thirdParty: {
                         create: {
