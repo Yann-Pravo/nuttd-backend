@@ -2,26 +2,35 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.signupSchema = void 0;
 exports.signupSchema = {
-    username: {
+    email: {
         isLength: {
             options: {
                 min: 3,
                 max: 32,
             },
-            errorMessage: 'Username must be at least 3 characters with a max of 32 characters',
+            errorMessage: 'Email must be at least 3 characters',
         },
         notEmpty: {
-            errorMessage: 'Username cannot be empty',
+            errorMessage: 'Email cannot be empty',
         },
         isString: {
-            errorMessage: 'Username must be a string!',
+            errorMessage: 'Email must be a string!',
         },
     },
-    email: {
-        notEmpty: true,
-    },
     password: {
-        notEmpty: true,
+        isLength: {
+            options: {
+                min: 8,
+                max: 32,
+            },
+            errorMessage: 'Password must be at least 8 characters',
+        },
+        notEmpty: {
+            errorMessage: 'Password cannot be empty',
+        },
+        isString: {
+            errorMessage: 'Password must be a string!',
+        },
     },
 };
 //# sourceMappingURL=validators.js.map
