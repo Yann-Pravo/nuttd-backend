@@ -79,12 +79,13 @@ model Nut {
 model Location {
   id          String    @id @default(cuid())
   citycountry String    @unique
-  city        String
+  city        String?
   country     String
+  countryFlag String?
   countryCode String
-  region      String
-  regionName  String
-  zip         String
+  region      String?
+  regionName  String?
+  zip         String?
   nuts        Nut[]
 }
 

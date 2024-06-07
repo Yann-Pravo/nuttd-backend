@@ -1,0 +1,6 @@
+-- AlterTable
+ALTER TABLE "Location" ADD COLUMN     "countryFlag" TEXT,
+ALTER COLUMN "city" DROP NOT NULL,
+ALTER COLUMN "region" DROP NOT NULL,
+ALTER COLUMN "regionName" DROP NOT NULL,
+ALTER COLUMN "zip" DROP NOT NULL;
