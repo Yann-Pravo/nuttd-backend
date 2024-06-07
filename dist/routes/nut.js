@@ -9,6 +9,8 @@ const router = express_1.default.Router();
 router.get('/', nut_1.getNuts);
 router.post('/', nut_1.createNut);
 router.get('/mynuts', nut_1.getMyNuts);
+router.get('/mynutscount', nut_1.getMyNutsCount);
+router.get('/mynutsrank', nut_1.getMyNutsRank);
 router.get('/:nutID', nut_1.getNut);
 router.put('/:nutID', nut_1.updateNut);
 router.delete('/:nutID', nut_1.deleteNut);

@@ -1,4 +1,4 @@
-import { Gender, Guild, Nut, Profile, User } from '@prisma/client'
+import { Gender, Guild, Nut, Profile, User, Location } from '@prisma/client'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 
@@ -44,9 +44,9 @@ export const getPublicUsers = (users: Pick<FullUser, 'id' | 'profile'>[]) =>
   users.map((user) => getPublicUser(user))
 
 export const getPublicNut = (nut: Nut) => {
-  const { id, date } = nut
+  const { id, date, locationId } = nut
 
-  return { id, date }
+  return { id, date, locationId }
 }
 
 export const getPublicNuts = (nuts: Nut[]) =>
@@ -81,3 +81,6 @@ export const excludeExpiredTokens = (tokens: string[]) =>
     const decoded = jwt.decode(token) as jwt.JwtPayload
     return decoded && decoded.exp && new Date(decoded.exp * 1000) > new Date()
   })
+
+export const getUniqueCityCountry = (location: Location) =>
+  `${location.city}-${location.country}`

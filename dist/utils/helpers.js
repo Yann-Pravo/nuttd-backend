@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.excludeExpiredTokens = exports.generateRefreshToken = exports.generateAccessToken = exports.getGender = exports.getPublicNuts = exports.getPublicNut = exports.getPublicUsers = exports.getPublicUser = exports.getPrivateUser = exports.comparePassword = exports.hashPassword = void 0;
+exports.getUniqueCityCountry = exports.excludeExpiredTokens = exports.generateRefreshToken = exports.generateAccessToken = exports.getGender = exports.getPublicNuts = exports.getPublicNut = exports.getPublicUsers = exports.getPublicUser = exports.getPrivateUser = exports.comparePassword = exports.hashPassword = void 0;
 const client_1 = require("@prisma/client");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -36,8 +36,8 @@ exports.getPublicUser = getPublicUser;
 const getPublicUsers = (users) => users.map((user) => (0, exports.getPublicUser)(user));
 exports.getPublicUsers = getPublicUsers;
 const getPublicNut = (nut) => {
-    const { id, date } = nut;
-    return { id, date };
+    const { id, date, locationId } = nut;
+    return { id, date, locationId };
 };
 exports.getPublicNut = getPublicNut;
 const getPublicNuts = (nuts) => nuts.map((nut) => (0, exports.getPublicNut)(nut));
@@ -66,4 +66,6 @@ const excludeExpiredTokens = (tokens) => tokens.filter((token) => {
     return decoded && decoded.exp && new Date(decoded.exp * 1000) > new Date();
 });
 exports.excludeExpiredTokens = excludeExpiredTokens;
+const getUniqueCityCountry = (location) => `${location.city}-${location.country}`;
+exports.getUniqueCityCountry = getUniqueCityCountry;
 //# sourceMappingURL=helpers.js.map

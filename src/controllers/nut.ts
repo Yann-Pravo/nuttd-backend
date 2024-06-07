@@ -1,7 +1,15 @@
 import { Request, Response } from 'express'
 import { client } from '../libs/client'
 import { handleError } from '../utils/errors'
-import { getPublicNut, getPublicNuts } from '../utils/helpers'
+import {
+  getPublicNut,
+  getPublicNuts,
+  getUniqueCityCountry,
+} from '../utils/helpers'
+import {
+  getUserRankByCityForCurrentMonth,
+  getUserRankByCityForCurrentYear,
+} from '../utils/queries'
 
 export const getNuts = async (_: Request, res: Response) => {
   try {
@@ -41,6 +49,76 @@ export const getMyNuts = async (req: Request, res: Response) => {
   }
 }
 
+export const getMyNutsCount = async (req: Request, res: Response) => {
+  const { id } = req.user
+
+  const startOfMonth = new Date(
+    new Date().getFullYear(),
+    new Date().getMonth(),
+    1
+  )
+
+  const startOfYear = new Date(new Date().getFullYear(), 0, 1)
+
+  try {
+    const currentMonthCount = await client.nut.count({
+      where: {
+        userId: id,
+        date: {
+          gte: startOfMonth,
+        },
+      },
+    })
+
+    const currentYearCount = await client.nut.count({
+      where: {
+        userId: id,
+        date: {
+          gte: startOfYear,
+        },
+      },
+    })
+
+    return res.status(200).json({ currentMonthCount, currentYearCount })
+  } catch (err) {
+    handleError(err, res)
+  }
+}
+
+export const getMyNutsRank = async (req: Request, res: Response) => {
+  const { id } = req.user
+  const location = req.body.location
+
+  try {
+    if (!location) throw new Error('No location given')
+
+    const userLocation = await client.location.findFirst({
+      where: {
+        citycountry: {
+          equals: getUniqueCityCountry(location),
+          mode: 'insensitive',
+        },
+      },
+    })
+
+    if (!userLocation) throw new Error('Location not found')
+
+    const monthRank = await getUserRankByCityForCurrentMonth(
+      userLocation.id,
+      id
+    )
+
+    const yearRank = await getUserRankByCityForCurrentYear(userLocation.id, id)
+
+    return res.status(200).json({
+      monthRank: monthRank[0]?.user_rank || null,
+      yearRank: yearRank[0]?.user_rank || null,
+    })
+  } catch (err) {
+    handleError(err, res)
+  }
+}
+
 export const createNut = async (req: Request, res: Response) => {
   const userId = req.user?.id
 
@@ -60,11 +138,11 @@ export const createNut = async (req: Request, res: Response) => {
           location: {
             connectOrCreate: {
               create: {
-                citycountry: `${location.city}-${location.country}`,
+                citycountry: getUniqueCityCountry(location),
                 ...location,
               },
               where: {
-                citycountry: `${location.city}-${location.country}`,
+                citycountry: getUniqueCityCountry(location),
               },
             },
           },
