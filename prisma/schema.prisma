@@ -69,11 +69,11 @@ model Nut {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   date        DateTime
-  location    Location  @relation(fields: [locationId], references: [id])
-  locationId  String    @unique
+  location    Location? @relation(fields: [locationId], references: [id])
+  locationId  String?
   solo        Boolean   @default(true)
-  nutter      User?     @relation(fields: [nutterId], references: [id])
-  nutterId    String
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String
 }
 
 model Location {

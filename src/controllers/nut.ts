@@ -32,7 +32,7 @@ export const getNut = async (req: Request, res: Response) => {
 export const getMyNuts = async (req: Request, res: Response) => {
   try {
     const nuts = await client.nut.findMany({
-      where: { nutterId: req.user?.id },
+      where: { userId: req.user?.id },
     })
 
     return res.status(200).json(getPublicNuts(nuts))
@@ -47,11 +47,28 @@ export const createNut = async (req: Request, res: Response) => {
   if (!userId)
     return res.status(400).json({ msg: 'The id of the user is missing.' })
 
+  const location = req.body.location
+
   try {
     await client.nut.create({
       data: {
-        ...req.body,
-        nutterId: userId,
+        date: req.body.date,
+        user: {
+          connect: { id: userId },
+        },
+        ...(location && {
+          location: {
+            connectOrCreate: {
+              create: {
+                citycountry: `${location.city}-${location.country}`,
+                ...location,
+              },
+              where: {
+                citycountry: `${location.city}-${location.country}`,
+              },
+            },
+          },
+        }),
       },
     })
 
@@ -70,7 +87,7 @@ export const updateNut = async (req: Request, res: Response) => {
 
   try {
     await client.nut.update({
-      where: { id: nutID, nutterId: userId },
+      where: { id: nutID, userId },
       data: req.body,
     })
 
@@ -89,7 +106,7 @@ export const deleteNut = async (req: Request, res: Response) => {
 
   try {
     await client.nut.delete({
-      where: { id: nutID, nutterId: userId },
+      where: { id: nutID, userId },
     })
 
     return res.sendStatus(200)

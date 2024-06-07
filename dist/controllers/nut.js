@@ -42,7 +42,7 @@ const getMyNuts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
         const nuts = yield client_1.client.nut.findMany({
-            where: { nutterId: (_a = req.user) === null || _a === void 0 ? void 0 : _a.id },
+            where: { userId: (_a = req.user) === null || _a === void 0 ? void 0 : _a.id },
         });
         return res.status(200).json((0, helpers_1.getPublicNuts)(nuts));
     }
@@ -56,9 +56,21 @@ const createNut = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = (_b = req.user) === null || _b === void 0 ? void 0 : _b.id;
     if (!userId)
         return res.status(400).json({ msg: 'The id of the user is missing.' });
+    const location = req.body.location;
     try {
         yield client_1.client.nut.create({
-            data: Object.assign(Object.assign({}, req.body), { nutterId: userId }),
+            data: Object.assign({ date: req.body.date, user: {
+                    connect: { id: userId },
+                } }, (location && {
+                location: {
+                    connectOrCreate: {
+                        create: Object.assign({ citycountry: `${location.city}-${location.country}` }, location),
+                        where: {
+                            citycountry: `${location.city}-${location.country}`,
+                        },
+                    },
+                },
+            })),
         });
         return res.sendStatus(200);
     }
@@ -75,7 +87,7 @@ const updateNut = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return res.status(400).json({ msg: 'The id of the user is missing.' });
     try {
         yield client_1.client.nut.update({
-            where: { id: nutID, nutterId: userId },
+            where: { id: nutID, userId },
             data: req.body,
         });
         return res.sendStatus(200);
@@ -93,7 +105,7 @@ const deleteNut = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return res.status(400).json({ msg: 'The id of the user is missing.' });
     try {
         yield client_1.client.nut.delete({
-            where: { id: nutID, nutterId: userId },
+            where: { id: nutID, userId },
         });
         return res.sendStatus(200);
     }

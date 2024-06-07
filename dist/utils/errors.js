@@ -4,6 +4,7 @@ exports.handleError = void 0;
 const library_1 = require("@prisma/client/runtime/library");
 const handleError = (err, res) => {
     var _a, _b;
+    console.log({ err });
     if (err instanceof library_1.PrismaClientKnownRequestError) {
         if (err.code === 'P2002') {
             return res.status(400).json({ msg: `${(_a = err.meta) === null || _a === void 0 ? void 0 : _a.target} already exists` });
