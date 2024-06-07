@@ -44,9 +44,9 @@ export const getPublicUsers = (users: Pick<FullUser, 'id' | 'profile'>[]) =>
   users.map((user) => getPublicUser(user))
 
 export const getPublicNut = (nut: Nut) => {
-  const { id, date, city, country, coordinates } = nut
+  const { id, date } = nut
 
-  return { id, date, city, country, coordinates }
+  return { id, date }
 }
 
 export const getPublicNuts = (nuts: Nut[]) =>

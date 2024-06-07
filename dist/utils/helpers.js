@@ -36,8 +36,8 @@ exports.getPublicUser = getPublicUser;
 const getPublicUsers = (users) => users.map((user) => (0, exports.getPublicUser)(user));
 exports.getPublicUsers = getPublicUsers;
 const getPublicNut = (nut) => {
-    const { id, date, city, country, coordinates } = nut;
-    return { id, date, city, country, coordinates };
+    const { id, date } = nut;
+    return { id, date };
 };
 exports.getPublicNut = getPublicNut;
 const getPublicNuts = (nuts) => nuts.map((nut) => (0, exports.getPublicNut)(nut));
