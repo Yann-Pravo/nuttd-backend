@@ -51,3 +51,63 @@ export const getUserRankByCityForCurrentYear = async (
       WHERE 
         "userId" = ${userId};
   `
+
+export const getUserRankByCountryForCurrentMonth = async (
+  countryCode: string,
+  userId: string
+): Promise<{ user_rank: number }[]> =>
+  await client.$queryRaw`
+    WITH UserNutCounts AS (
+      SELECT 
+        "User"."id" AS "userId",
+        CAST(COUNT(*) AS INTEGER) AS nut_count,
+        CAST(RANK() OVER (ORDER BY COUNT(*) DESC) AS INTEGER) AS user_rank
+      FROM 
+        "Nut" 
+      JOIN 
+        "Location" ON "Nut"."locationId" = "Location"."id"
+      JOIN 
+        "User" ON "Nut"."userId" = "User"."id"
+      WHERE 
+        "Location"."countryCode" = ${countryCode}
+        AND "Nut"."date" >= DATE_TRUNC('month', CURRENT_DATE)
+      GROUP BY 
+        "User"."id"
+    )
+    SELECT 
+      user_rank
+    FROM 
+      UserNutCounts 
+    WHERE 
+      "userId" = ${userId};
+  `
+
+export const getUserRankByCountryForCurrentYear = async (
+  countryCode: string,
+  userId: string
+): Promise<{ user_rank: number }[]> =>
+  await client.$queryRaw`
+    WITH UserNutCounts AS (
+      SELECT 
+        "User"."id" AS "userId",
+        CAST(COUNT(*) AS INTEGER) AS nut_count,
+        CAST(RANK() OVER (ORDER BY COUNT(*) DESC) AS INTEGER) AS user_rank
+      FROM 
+        "Nut" 
+      JOIN 
+        "Location" ON "Nut"."locationId" = "Location"."id"
+      JOIN 
+        "User" ON "Nut"."userId" = "User"."id"
+      WHERE 
+        "Location"."countryCode" = ${countryCode}
+        AND "Nut"."date" >= DATE_TRUNC('year', CURRENT_DATE)
+      GROUP BY 
+        "User"."id"
+    )
+    SELECT 
+      user_rank
+    FROM 
+      UserNutCounts 
+    WHERE 
+      "userId" = ${userId};
+  `

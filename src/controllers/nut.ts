@@ -9,6 +9,8 @@ import {
 import {
   getUserRankByCityForCurrentMonth,
   getUserRankByCityForCurrentYear,
+  getUserRankByCountryForCurrentMonth,
+  getUserRankByCountryForCurrentYear,
 } from '../utils/queries'
 
 export const getNuts = async (_: Request, res: Response) => {
@@ -103,16 +105,30 @@ export const getMyNutsRank = async (req: Request, res: Response) => {
 
     if (!userLocation) throw new Error('Location not found')
 
-    const monthRank = await getUserRankByCityForCurrentMonth(
+    const monthRankCity = await getUserRankByCityForCurrentMonth(
+      userLocation.id,
+      id
+    )
+    const yearRankCity = await getUserRankByCityForCurrentYear(
       userLocation.id,
       id
     )
 
-    const yearRank = await getUserRankByCityForCurrentYear(userLocation.id, id)
+    const monthRankCountry = await getUserRankByCountryForCurrentMonth(
+      userLocation.countryCode,
+      id
+    )
+
+    const yearRankCountry = await getUserRankByCountryForCurrentYear(
+      userLocation.countryCode,
+      id
+    )
 
     return res.status(200).json({
-      monthRank: monthRank[0]?.user_rank || null,
-      yearRank: yearRank[0]?.user_rank || null,
+      monthRank: monthRankCity[0]?.user_rank || null,
+      yearRank: yearRankCity[0]?.user_rank || null,
+      monthRankCountry: monthRankCountry[0]?.user_rank || null,
+      yearRankCountry: yearRankCountry[0]?.user_rank || null,
     })
   } catch (err) {
     handleError(err, res)

@@ -81,7 +81,7 @@ const getMyNutsCount = (req, res) => __awaiter(void 0, void 0, void 0, function*
 });
 exports.getMyNutsCount = getMyNutsCount;
 const getMyNutsRank = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _b, _c;
+    var _b, _c, _d, _e;
     const { id } = req.user;
     const location = req.body.location;
     try {
@@ -97,11 +97,15 @@ const getMyNutsRank = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         });
         if (!userLocation)
             throw new Error('Location not found');
-        const monthRank = yield (0, queries_1.getUserRankByCityForCurrentMonth)(userLocation.id, id);
-        const yearRank = yield (0, queries_1.getUserRankByCityForCurrentYear)(userLocation.id, id);
+        const monthRankCity = yield (0, queries_1.getUserRankByCityForCurrentMonth)(userLocation.id, id);
+        const yearRankCity = yield (0, queries_1.getUserRankByCityForCurrentYear)(userLocation.id, id);
+        const monthRankCountry = yield (0, queries_1.getUserRankByCountryForCurrentMonth)(userLocation.countryCode, id);
+        const yearRankCountry = yield (0, queries_1.getUserRankByCountryForCurrentYear)(userLocation.countryCode, id);
         return res.status(200).json({
-            monthRank: ((_b = monthRank[0]) === null || _b === void 0 ? void 0 : _b.user_rank) || null,
-            yearRank: ((_c = yearRank[0]) === null || _c === void 0 ? void 0 : _c.user_rank) || null,
+            monthRank: ((_b = monthRankCity[0]) === null || _b === void 0 ? void 0 : _b.user_rank) || null,
+            yearRank: ((_c = yearRankCity[0]) === null || _c === void 0 ? void 0 : _c.user_rank) || null,
+            monthRankCountry: ((_d = monthRankCountry[0]) === null || _d === void 0 ? void 0 : _d.user_rank) || null,
+            yearRankCountry: ((_e = yearRankCountry[0]) === null || _e === void 0 ? void 0 : _e.user_rank) || null,
         });
     }
     catch (err) {
@@ -110,8 +114,8 @@ const getMyNutsRank = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 });
 exports.getMyNutsRank = getMyNutsRank;
 const createNut = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _d;
-    const userId = (_d = req.user) === null || _d === void 0 ? void 0 : _d.id;
+    var _f;
+    const userId = (_f = req.user) === null || _f === void 0 ? void 0 : _f.id;
     if (!userId)
         return res.status(400).json({ msg: 'The id of the user is missing.' });
     const location = req.body.location;
@@ -138,9 +142,9 @@ const createNut = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.createNut = createNut;
 const updateNut = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _e;
+    var _g;
     const { nutID } = req.params;
-    const userId = (_e = req.user) === null || _e === void 0 ? void 0 : _e.id;
+    const userId = (_g = req.user) === null || _g === void 0 ? void 0 : _g.id;
     if (!userId)
         return res.status(400).json({ msg: 'The id of the user is missing.' });
     try {
@@ -156,9 +160,9 @@ const updateNut = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.updateNut = updateNut;
 const deleteNut = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _f;
+    var _h;
     const { nutID } = req.params;
-    const userId = (_f = req.user) === null || _f === void 0 ? void 0 : _f.id;
+    const userId = (_h = req.user) === null || _h === void 0 ? void 0 : _h.id;
     if (!userId)
         return res.status(400).json({ msg: 'The id of the user is missing.' });
     try {
