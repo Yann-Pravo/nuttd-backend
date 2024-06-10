@@ -40,7 +40,7 @@ const getUsersByUsername = (req, res) => __awaiter(void 0, void 0, void 0, funct
 exports.getUsersByUsername = getUsersByUsername;
 const updateUserLocation = (id, ip) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const response = yield fetch(`https://api.ipgeolocation.io/ipgeo?apiKey=${process.env.IPGEOLOCATION_KEY}`);
+        const response = yield fetch(`https://api.ipgeolocation.io/ipgeo?apiKey=${process.env.IPGEOLOCATION_KEY}&ip=${ip}`);
         const location = yield response.json();
         if (location && location.city && location.country_name) {
             const user = yield client_1.client.user.update({

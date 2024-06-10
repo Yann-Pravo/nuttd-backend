@@ -39,7 +39,7 @@ export const getUsersByUsername = async (req: Request, res: Response) => {
 const updateUserLocation = async (id: string, ip: string) => {
   try {
     const response = await fetch(
-      `https://api.ipgeolocation.io/ipgeo?apiKey=${process.env.IPGEOLOCATION_KEY}`
+      `https://api.ipgeolocation.io/ipgeo?apiKey=${process.env.IPGEOLOCATION_KEY}&ip=${ip}`
     )
     const location = await response.json()
 
