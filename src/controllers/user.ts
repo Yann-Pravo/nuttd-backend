@@ -43,7 +43,7 @@ const updateUserLocation = async (id: string, ip: string) => {
     )
     const location = await response.json()
 
-    if (location) {
+    if (location && location.city && location.country_name) {
       const user = await client.user.update({
         where: { id },
         data: {
@@ -51,7 +51,10 @@ const updateUserLocation = async (id: string, ip: string) => {
           location: {
             connectOrCreate: {
               create: {
-                citycountry: getUniqueCityCountry(location),
+                citycountry: getUniqueCityCountry(
+                  location.city,
+                  location.country_name
+                ),
                 city: location.city,
                 country: location.country_name,
                 countryCode: location.country_code3,
@@ -61,7 +64,10 @@ const updateUserLocation = async (id: string, ip: string) => {
                 zip: location.zipcode,
               },
               where: {
-                citycountry: getUniqueCityCountry(location),
+                citycountry: getUniqueCityCountry(
+                  location.city,
+                  location.country_name
+                ),
               },
             },
           },

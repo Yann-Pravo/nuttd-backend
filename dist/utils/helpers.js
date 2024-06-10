@@ -16,11 +16,12 @@ exports.hashPassword = hashPassword;
 const comparePassword = (plain, hashed) => bcrypt_1.default.compareSync(plain, hashed);
 exports.comparePassword = comparePassword;
 const getPrivateUser = (user) => {
-    const { id, email, profile, followers, following, guilds, nuts } = user;
+    const { id, email, profile, location, followers, following, guilds, nuts } = user;
     return {
         id,
         email,
         profile,
+        location,
         followers,
         following,
         guilds,
@@ -66,6 +67,6 @@ const excludeExpiredTokens = (tokens) => tokens.filter((token) => {
     return decoded && decoded.exp && new Date(decoded.exp * 1000) > new Date();
 });
 exports.excludeExpiredTokens = excludeExpiredTokens;
-const getUniqueCityCountry = (location) => `${location.city}-${location.country}`;
+const getUniqueCityCountry = (city, country) => `${city}-${country}`;
 exports.getUniqueCityCountry = getUniqueCityCountry;
 //# sourceMappingURL=helpers.js.map

@@ -1,11 +1,7 @@
 import { Request, Response } from 'express'
 import { client } from '../libs/client'
 import { handleError } from '../utils/errors'
-import {
-  getPublicNut,
-  getPublicNuts,
-  getUniqueCityCountry,
-} from '../utils/helpers'
+import { getPublicNut, getPublicNuts } from '../utils/helpers'
 import {
   getUserRankByCityForCurrentMonth,
   getUserRankByCityForCurrentYear,
@@ -89,15 +85,26 @@ export const getMyNutsCount = async (req: Request, res: Response) => {
 
 export const getMyNutsRank = async (req: Request, res: Response) => {
   const { id } = req.user
-  const location = req.body.location
 
   try {
-    if (!location) throw new Error('No location given')
+    const user = await client.user.findFirst({
+      where: {
+        id: {
+          equals: id,
+          mode: 'insensitive',
+        },
+      },
+      include: {
+        location: true,
+      },
+    })
+
+    if (!user.locationId) throw new Error('No location given')
 
     const userLocation = await client.location.findFirst({
       where: {
-        citycountry: {
-          equals: getUniqueCityCountry(location),
+        id: {
+          equals: user.locationId,
           mode: 'insensitive',
         },
       },
@@ -135,33 +142,32 @@ export const getMyNutsRank = async (req: Request, res: Response) => {
 }
 
 export const createNut = async (req: Request, res: Response) => {
-  const userId = req.user?.id
+  const { id } = req.user
 
-  if (!userId)
+  if (!id)
     return res.status(400).json({ msg: 'The id of the user is missing.' })
 
-  const location = req.body.location
-
   try {
+    const user = await client.user.findFirst({
+      where: {
+        id: {
+          equals: id,
+          mode: 'insensitive',
+        },
+      },
+    })
+
     await client.nut.create({
       data: {
         date: req.body.date,
         user: {
-          connect: { id: userId },
+          connect: { id },
         },
-        ...(location && {
-          location: {
-            connectOrCreate: {
-              create: {
-                citycountry: getUniqueCityCountry(location),
-                ...location,
-              },
-              where: {
-                citycountry: getUniqueCityCountry(location),
-              },
-            },
+        location: {
+          connect: {
+            id: user.locationId,
           },
-        }),
+        },
       },
     })
 

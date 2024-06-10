@@ -83,14 +83,24 @@ exports.getMyNutsCount = getMyNutsCount;
 const getMyNutsRank = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _b, _c, _d, _e;
     const { id } = req.user;
-    const location = req.body.location;
     try {
-        if (!location)
+        const user = yield client_1.client.user.findFirst({
+            where: {
+                id: {
+                    equals: id,
+                    mode: 'insensitive',
+                },
+            },
+            include: {
+                location: true,
+            },
+        });
+        if (!user.locationId)
             throw new Error('No location given');
         const userLocation = yield client_1.client.location.findFirst({
             where: {
-                citycountry: {
-                    equals: (0, helpers_1.getUniqueCityCountry)(location),
+                id: {
+                    equals: user.locationId,
                     mode: 'insensitive',
                 },
             },
@@ -114,25 +124,30 @@ const getMyNutsRank = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 });
 exports.getMyNutsRank = getMyNutsRank;
 const createNut = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _f;
-    const userId = (_f = req.user) === null || _f === void 0 ? void 0 : _f.id;
-    if (!userId)
+    const { id } = req.user;
+    if (!id)
         return res.status(400).json({ msg: 'The id of the user is missing.' });
-    const location = req.body.location;
     try {
+        const user = yield client_1.client.user.findFirst({
+            where: {
+                id: {
+                    equals: id,
+                    mode: 'insensitive',
+                },
+            },
+        });
         yield client_1.client.nut.create({
-            data: Object.assign({ date: req.body.date, user: {
-                    connect: { id: userId },
-                } }, (location && {
+            data: {
+                date: req.body.date,
+                user: {
+                    connect: { id },
+                },
                 location: {
-                    connectOrCreate: {
-                        create: Object.assign({ citycountry: (0, helpers_1.getUniqueCityCountry)(location) }, location),
-                        where: {
-                            citycountry: (0, helpers_1.getUniqueCityCountry)(location),
-                        },
+                    connect: {
+                        id: user.locationId,
                     },
                 },
-            })),
+            },
         });
         return res.sendStatus(200);
     }
@@ -142,9 +157,9 @@ const createNut = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.createNut = createNut;
 const updateNut = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _g;
+    var _f;
     const { nutID } = req.params;
-    const userId = (_g = req.user) === null || _g === void 0 ? void 0 : _g.id;
+    const userId = (_f = req.user) === null || _f === void 0 ? void 0 : _f.id;
     if (!userId)
         return res.status(400).json({ msg: 'The id of the user is missing.' });
     try {
@@ -160,9 +175,9 @@ const updateNut = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.updateNut = updateNut;
 const deleteNut = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _h;
+    var _g;
     const { nutID } = req.params;
-    const userId = (_h = req.user) === null || _h === void 0 ? void 0 : _h.id;
+    const userId = (_g = req.user) === null || _g === void 0 ? void 0 : _g.id;
     if (!userId)
         return res.status(400).json({ msg: 'The id of the user is missing.' });
     try {

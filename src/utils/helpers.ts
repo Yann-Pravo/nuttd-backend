@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken'
 
 interface FullUser extends User {
   profile: Profile | null
+  location: Location | null
   followers: User[]
   following: User[]
   guilds: Guild[]
@@ -21,12 +22,14 @@ export const comparePassword = (plain: string, hashed: string) =>
   bcrypt.compareSync(plain, hashed)
 
 export const getPrivateUser = (user: FullUser) => {
-  const { id, email, profile, followers, following, guilds, nuts } = user
+  const { id, email, profile, location, followers, following, guilds, nuts } =
+    user
 
   return {
     id,
     email,
     profile,
+    location,
     followers,
     following,
     guilds,
@@ -82,5 +85,5 @@ export const excludeExpiredTokens = (tokens: string[]) =>
     return decoded && decoded.exp && new Date(decoded.exp * 1000) > new Date()
   })
 
-export const getUniqueCityCountry = (location: Location) =>
-  `${location.city}-${location.country}`
+export const getUniqueCityCountry = (city: string, country: string) =>
+  `${city}-${country}`
