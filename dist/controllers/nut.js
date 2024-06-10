@@ -102,8 +102,8 @@ const getMyNutsRank = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         const monthRankCountry = yield (0, queries_1.getUserRankByCountryForCurrentMonth)(userLocation.countryCode, id);
         const yearRankCountry = yield (0, queries_1.getUserRankByCountryForCurrentYear)(userLocation.countryCode, id);
         return res.status(200).json({
-            monthRank: ((_b = monthRankCity[0]) === null || _b === void 0 ? void 0 : _b.user_rank) || null,
-            yearRank: ((_c = yearRankCity[0]) === null || _c === void 0 ? void 0 : _c.user_rank) || null,
+            monthRankCity: ((_b = monthRankCity[0]) === null || _b === void 0 ? void 0 : _b.user_rank) || null,
+            yearRankCity: ((_c = yearRankCity[0]) === null || _c === void 0 ? void 0 : _c.user_rank) || null,
             monthRankCountry: ((_d = monthRankCountry[0]) === null || _d === void 0 ? void 0 : _d.user_rank) || null,
             yearRankCountry: ((_e = yearRankCountry[0]) === null || _e === void 0 ? void 0 : _e.user_rank) || null,
         });

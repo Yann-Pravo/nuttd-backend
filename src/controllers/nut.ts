@@ -125,8 +125,8 @@ export const getMyNutsRank = async (req: Request, res: Response) => {
     )
 
     return res.status(200).json({
-      monthRank: monthRankCity[0]?.user_rank || null,
-      yearRank: yearRankCity[0]?.user_rank || null,
+      monthRankCity: monthRankCity[0]?.user_rank || null,
+      yearRankCity: yearRankCity[0]?.user_rank || null,
       monthRankCountry: monthRankCountry[0]?.user_rank || null,
       yearRankCountry: yearRankCountry[0]?.user_rank || null,
     })
