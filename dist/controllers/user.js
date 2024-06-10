@@ -83,6 +83,7 @@ const updateUserLocation = (id, ip) => __awaiter(void 0, void 0, void 0, functio
 });
 const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.user;
+    const myIp = req.headers['x-forwarded-for'];
     try {
         const user = yield client_1.client.user.findFirst({
             where: {
@@ -103,10 +104,10 @@ const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (!user)
             throw new Error('User not found');
         let updatedUser;
-        if (req.ip !== user.ip) {
-            updatedUser = yield updateUserLocation(id, req.ip);
+        if (myIp !== user.ip) {
+            updatedUser = yield updateUserLocation(id, myIp);
         }
-        return res.send(Object.assign(Object.assign({}, (0, helpers_1.getPrivateUser)(updatedUser || user)), { ipReq: req.ip, ipUser: user.ip, ipHeader: req.headers['x-forwarded-for'] }));
+        return res.send((0, helpers_1.getPrivateUser)(updatedUser || user));
     }
     catch (err) {
         (0, errors_1.handleError)(err, res);

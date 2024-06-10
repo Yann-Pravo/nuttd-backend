@@ -91,6 +91,7 @@ const updateUserLocation = async (id: string, ip: string) => {
 
 export const getUser = async (req: Request, res: Response) => {
   const { id } = req.user
+  const myIp = req.headers['x-forwarded-for'] as string
 
   try {
     const user = await client.user.findFirst({
@@ -113,16 +114,11 @@ export const getUser = async (req: Request, res: Response) => {
     if (!user) throw new Error('User not found')
 
     let updatedUser
-    if (req.ip !== user.ip) {
-      updatedUser = await updateUserLocation(id, req.ip)
+    if (myIp !== user.ip) {
+      updatedUser = await updateUserLocation(id, myIp)
     }
 
-    return res.send({
-      ...getPrivateUser(updatedUser || user),
-      ipReq: req.ip,
-      ipUser: user.ip,
-      ipHeader: req.headers['x-forwarded-for'],
-    })
+    return res.send(getPrivateUser(updatedUser || user))
   } catch (err) {
     handleError(err, res)
   }
