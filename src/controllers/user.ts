@@ -5,6 +5,7 @@ import {
   comparePassword,
   getPrivateUser,
   getPublicUsers,
+  getUniqueCityCountry,
   hashPassword,
 } from '../utils/helpers'
 
@@ -35,6 +36,53 @@ export const getUsersByUsername = async (req: Request, res: Response) => {
   }
 }
 
+const updateUserLocation = async (id: string, ip: string) => {
+  try {
+    const response = await fetch(
+      `https://api.ipgeolocation.io/ipgeo?apiKey=${process.env.IPGEOLOCATION_KEY}`
+    )
+    const location = await response.json()
+
+    if (location) {
+      const user = await client.user.update({
+        where: { id },
+        data: {
+          ip,
+          location: {
+            connectOrCreate: {
+              create: {
+                citycountry: getUniqueCityCountry(location),
+                city: location.city,
+                country: location.country_name,
+                countryCode: location.country_code3,
+                countryFlag: location.country_flag,
+                region: location.state_code,
+                regionName: location.state_prov,
+                zip: location.zipcode,
+              },
+              where: {
+                citycountry: getUniqueCityCountry(location),
+              },
+            },
+          },
+        },
+        include: {
+          profile: true,
+          followers: true,
+          following: true,
+          guilds: true,
+          nuts: true,
+          location: true,
+        },
+      })
+
+      return user
+    }
+  } catch {
+    return null
+  }
+}
+
 export const getUser = async (req: Request, res: Response) => {
   const { id } = req.user
 
@@ -52,12 +100,18 @@ export const getUser = async (req: Request, res: Response) => {
         following: true,
         guilds: true,
         nuts: true,
+        location: true,
       },
     })
 
     if (!user) throw new Error('User not found')
 
-    return res.send({ ...getPrivateUser(user), ipInfo: req.ipInfo })
+    let updatedUser
+    if (req.ip !== user.ip) {
+      updatedUser = await updateUserLocation(id, req.ip)
+    }
+
+    return res.send(getPrivateUser(updatedUser || user))
   } catch (err) {
     handleError(err, res)
   }

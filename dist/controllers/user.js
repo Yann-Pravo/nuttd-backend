@@ -38,6 +38,49 @@ const getUsersByUsername = (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.getUsersByUsername = getUsersByUsername;
+const updateUserLocation = (id, ip) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const response = yield fetch(`https://api.ipgeolocation.io/ipgeo?apiKey=${process.env.IPGEOLOCATION_KEY}`);
+        const location = yield response.json();
+        if (location) {
+            const user = yield client_1.client.user.update({
+                where: { id },
+                data: {
+                    ip,
+                    location: {
+                        connectOrCreate: {
+                            create: {
+                                citycountry: (0, helpers_1.getUniqueCityCountry)(location),
+                                city: location.city,
+                                country: location.country_name,
+                                countryCode: location.country_code3,
+                                countryFlag: location.country_flag,
+                                region: location.state_code,
+                                regionName: location.state_prov,
+                                zip: location.zipcode,
+                            },
+                            where: {
+                                citycountry: (0, helpers_1.getUniqueCityCountry)(location),
+                            },
+                        },
+                    },
+                },
+                include: {
+                    profile: true,
+                    followers: true,
+                    following: true,
+                    guilds: true,
+                    nuts: true,
+                    location: true,
+                },
+            });
+            return user;
+        }
+    }
+    catch (_a) {
+        return null;
+    }
+});
 const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.user;
     try {
@@ -54,11 +97,16 @@ const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 following: true,
                 guilds: true,
                 nuts: true,
+                location: true,
             },
         });
         if (!user)
             throw new Error('User not found');
-        return res.send(Object.assign(Object.assign({}, (0, helpers_1.getPrivateUser)(user)), { ipInfo: req.ipInfo }));
+        let updatedUser;
+        if (req.ip !== user.ip) {
+            updatedUser = yield updateUserLocation(id, req.ip);
+        }
+        return res.send((0, helpers_1.getPrivateUser)(updatedUser || user));
     }
     catch (err) {
         (0, errors_1.handleError)(err, res);
