@@ -19,6 +19,8 @@ require("./strategies/discord-strategy");
 require("./strategies/facebook-strategy");
 require("./strategies/google-strategy");
 const middlewares_1 = require("./utils/middlewares");
+const nax_ipware_1 = require("@fullerstack/nax-ipware");
+const ipware = new nax_ipware_1.Ipware();
 const port = process.env.PORT || 3000;
 const app = (0, express_1.default)();
 dotenv_1.default.config();
@@ -34,6 +36,14 @@ app.use((0, express_session_1.default)({
     saveUninitialized: false,
     resave: false,
 }));
+app.use((req, res, next) => {
+    req.ipInfo = ipware.getClientIP(req);
+    // { ip: '177.139.100.100', isPublic: true, isRouteTrusted: false }
+    // do something with the ip address (e.g. pass it down through the request)
+    // note: ip address doesn't change often, so better cache it for performance,
+    // you should have distinct session ID for public and anonymous users to cache the ip address
+    next();
+});
 app.use(passport_1.default.initialize());
 app.use(passport_1.default.session());
 app.use('/api/auth', auth_1.default);

@@ -5,5 +5,6 @@ export {}
 declare module 'express-serve-static-core' {
   export interface Request {
     user?: User
+    ipInfo: IpwareIpInfo | null
   }
 }

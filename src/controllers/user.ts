@@ -57,7 +57,7 @@ export const getUser = async (req: Request, res: Response) => {
 
     if (!user) throw new Error('User not found')
 
-    return res.send(getPrivateUser(user))
+    return res.send({ ...getPrivateUser(user), ipInfo: req.ipInfo })
   } catch (err) {
     handleError(err, res)
   }

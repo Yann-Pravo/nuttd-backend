@@ -55,6 +55,7 @@
     "zod": "^3.23.8"
   },
   "dependencies": {
+    "@fullerstack/nax-ipware": "^0.10.0",
     "@prisma/client": "^5.14.0",
     "@types/passport": "^1.0.16",
     "@types/passport-discord": "^0.1.13",

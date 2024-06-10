@@ -58,7 +58,7 @@ const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
         if (!user)
             throw new Error('User not found');
-        return res.send((0, helpers_1.getPrivateUser)(user));
+        return res.send(Object.assign(Object.assign({}, (0, helpers_1.getPrivateUser)(user)), { ipInfo: req.ipInfo }));
     }
     catch (err) {
         (0, errors_1.handleError)(err, res);

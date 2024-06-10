@@ -14,7 +14,9 @@ import './strategies/discord-strategy'
 import './strategies/facebook-strategy'
 import './strategies/google-strategy'
 import { privateRoute } from './utils/middlewares'
+import { Ipware } from '@fullerstack/nax-ipware'
 
+const ipware = new Ipware()
 const port = process.env.PORT || 3000
 
 const app = express()
@@ -37,6 +39,15 @@ app.use(
     resave: false,
   })
 )
+
+app.use((req, res, next) => {
+  req.ipInfo = ipware.getClientIP(req)
+  // { ip: '177.139.100.100', isPublic: true, isRouteTrusted: false }
+  // do something with the ip address (e.g. pass it down through the request)
+  // note: ip address doesn't change often, so better cache it for performance,
+  // you should have distinct session ID for public and anonymous users to cache the ip address
+  next()
+})
 
 app.use(passport.initialize())
 app.use(passport.session())

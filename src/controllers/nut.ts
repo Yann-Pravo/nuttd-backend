@@ -118,7 +118,6 @@ export const getMyNutsRank = async (req: Request, res: Response) => {
       userLocation.countryCode,
       id
     )
-
     const yearRankCountry = await getUserRankByCountryForCurrentYear(
       userLocation.countryCode,
       id
