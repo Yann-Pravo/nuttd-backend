@@ -117,7 +117,11 @@ export const getUser = async (req: Request, res: Response) => {
       updatedUser = await updateUserLocation(id, req.ip)
     }
 
-    return res.send(getPrivateUser(updatedUser || user))
+    return res.send({
+      ...getPrivateUser(updatedUser || user),
+      ipReq: req.ip,
+      ipUser: user.ip,
+    })
   } catch (err) {
     handleError(err, res)
   }
