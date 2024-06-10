@@ -23,6 +23,7 @@ const getUserRankByCityForCurrentMonth = (locationId, userId) => __awaiter(void 
       WHERE 
         "locationId" = ${locationId}
         AND "date" >= DATE_TRUNC('month', CURRENT_DATE)
+        AND "date" < DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '1 month'
       GROUP BY 
         "userId"
     )
@@ -47,6 +48,7 @@ const getUserRankByCityForCurrentYear = (locationId, userId) => __awaiter(void 0
         WHERE 
           "locationId" = ${locationId}
           AND "date" >= DATE_TRUNC('year', CURRENT_DATE)
+          AND "date" < DATE_TRUNC('year', CURRENT_DATE) + INTERVAL '1 year'
         GROUP BY 
           "userId"
       )
@@ -75,6 +77,7 @@ const getUserRankByCountryForCurrentMonth = (countryCode, userId) => __awaiter(v
       WHERE 
         "Location"."countryCode" = ${countryCode}
         AND "Nut"."date" >= DATE_TRUNC('month', CURRENT_DATE)
+        AND "Nut"."date" < DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '1 month'
       GROUP BY 
         "User"."id"
     )
@@ -103,6 +106,7 @@ const getUserRankByCountryForCurrentYear = (countryCode, userId) => __awaiter(vo
       WHERE 
         "Location"."countryCode" = ${countryCode}
         AND "Nut"."date" >= DATE_TRUNC('year', CURRENT_DATE)
+        AND "Nut"."date" < DATE_TRUNC('year', CURRENT_DATE) + INTERVAL '1 year'
       GROUP BY 
         "User"."id"
     )
