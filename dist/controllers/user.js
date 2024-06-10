@@ -106,7 +106,7 @@ const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (req.ip !== user.ip) {
             updatedUser = yield updateUserLocation(id, req.ip);
         }
-        return res.send(Object.assign(Object.assign({}, (0, helpers_1.getPrivateUser)(updatedUser || user)), { ipReq: req.ip, ipUser: user.ip }));
+        return res.send(Object.assign(Object.assign({}, (0, helpers_1.getPrivateUser)(updatedUser || user)), { ipReq: req.ip, ipUser: user.ip, ipHeader: req.headers['x-forwarded-for'] }));
     }
     catch (err) {
         (0, errors_1.handleError)(err, res);

@@ -121,6 +121,7 @@ export const getUser = async (req: Request, res: Response) => {
       ...getPrivateUser(updatedUser || user),
       ipReq: req.ip,
       ipUser: user.ip,
+      ipHeader: req.headers['x-forwarded-for'],
     })
   } catch (err) {
     handleError(err, res)
