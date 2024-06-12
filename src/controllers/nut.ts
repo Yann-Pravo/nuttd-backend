@@ -160,6 +160,7 @@ export const createNut = async (req: Request, res: Response) => {
     await client.nut.create({
       data: {
         date: req.body.date,
+        comment: req.body.comment,
         user: {
           connect: { id },
         },

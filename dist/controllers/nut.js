@@ -139,6 +139,7 @@ const createNut = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         yield client_1.client.nut.create({
             data: {
                 date: req.body.date,
+                comment: req.body.comment,
                 user: {
                     connect: { id },
                 },
