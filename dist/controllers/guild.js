@@ -9,11 +9,40 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getGuild = exports.createGuild = void 0;
+exports.joinGuild = exports.getGuild = exports.createGuild = exports.getGuilds = void 0;
 const client_1 = require("../libs/client");
 const errors_1 = require("../utils/errors");
 const date_fns_1 = require("date-fns");
 const helpers_1 = require("../utils/helpers");
+const getGuilds = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const guilds = yield client_1.client.guild.findMany({
+            select: {
+                id: true,
+                isPrivate: true,
+                name: true,
+                createdAt: true,
+                _count: {
+                    select: {
+                        users: true,
+                    },
+                },
+            },
+        });
+        const guildsWithUserCount = guilds.map((guild) => ({
+            id: guild.id,
+            createdAt: guild.createdAt,
+            isPrivate: guild.isPrivate,
+            name: guild.name,
+            userCount: guild._count.users,
+        }));
+        res.status(200).json(guildsWithUserCount);
+    }
+    catch (err) {
+        (0, errors_1.handleError)(err, res);
+    }
+});
+exports.getGuilds = getGuilds;
 const createGuild = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.user;
     if (!id)
@@ -109,4 +138,28 @@ const getGuild = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getGuild = getGuild;
+const joinGuild = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.user;
+    const { guildId } = req.params;
+    if (!id)
+        return res.status(400).json({ msg: 'The id of the user is missing.' });
+    try {
+        yield client_1.client.guild.update({
+            where: { id: guildId },
+            data: {
+                users: {
+                    connect: { id },
+                },
+            },
+            include: {
+                users: true,
+            },
+        });
+        return res.sendStatus(200);
+    }
+    catch (err) {
+        (0, errors_1.handleError)(err, res);
+    }
+});
+exports.joinGuild = joinGuild;
 //# sourceMappingURL=guild.js.map
