@@ -13,6 +13,7 @@ const user_1 = __importDefault(require("./routes/user"));
 const profile_1 = __importDefault(require("./routes/profile"));
 const nut_1 = __importDefault(require("./routes/nut"));
 const auth_1 = __importDefault(require("./routes/auth"));
+const guild_1 = __importDefault(require("./routes/guild"));
 require("./strategies/local-strategy");
 require("./strategies/jwt-strategy");
 require("./strategies/discord-strategy");
@@ -41,5 +42,6 @@ app.use(middlewares_1.privateRoute);
 app.use('/api/users', user_1.default);
 app.use('/api/profile', profile_1.default);
 app.use('/api/nuts', nut_1.default);
+app.use('/api/guilds', guild_1.default);
 app.listen(port, () => console.log(`Server is running on port ${port}`));
 //# sourceMappingURL=index.js.map

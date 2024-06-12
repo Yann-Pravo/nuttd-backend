@@ -36,7 +36,8 @@ model User {
   password      String?
   followers     User[]    @relation("UserFollows")
   following     User[]    @relation("UserFollows")
-  guilds        Guild[]
+  guilds        Guild[]   @relation("GuildUsers")
+  adminOfGuilds Guild[]   @relation("GuildAdmins")
   nuts          Nut[]
   role          Role      @default(USER)
   profile       Profile?
@@ -72,6 +73,7 @@ model Nut {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   date        DateTime
+  comment     String?
   location    Location? @relation(fields: [locationId], references: [id])
   locationId  String?
   solo        Boolean   @default(true)
@@ -97,7 +99,8 @@ model Guild {
   id        String    @id @default(cuid())
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  isPrivate Boolean   @default(false)
   name      String
-  users     User[]
+  users     User[]    @relation("GuildUsers")
+  admins    User[]    @relation("GuildAdmins")
 }
-

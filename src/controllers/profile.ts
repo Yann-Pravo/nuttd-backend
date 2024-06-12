@@ -3,14 +3,14 @@ import { client } from '../libs/client'
 import { handleError } from '../utils/errors'
 
 export const createProfile = async (req: Request, res: Response) => {
-  const userId = req.user?.id
+  const { id } = req.user
 
-  if (!userId)
+  if (!id)
     return res.status(400).json({ msg: 'The id of the user is missing.' })
 
   try {
     await client.profile.create({
-      data: { ...req.body, userId },
+      data: { ...req.body, userId: id },
     })
 
     return res.sendStatus(200)

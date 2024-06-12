@@ -13,13 +13,12 @@ exports.createProfile = void 0;
 const client_1 = require("../libs/client");
 const errors_1 = require("../utils/errors");
 const createProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
-    if (!userId)
+    const { id } = req.user;
+    if (!id)
         return res.status(400).json({ msg: 'The id of the user is missing.' });
     try {
         yield client_1.client.profile.create({
-            data: Object.assign(Object.assign({}, req.body), { userId }),
+            data: Object.assign(Object.assign({}, req.body), { userId: id }),
         });
         return res.sendStatus(200);
     }

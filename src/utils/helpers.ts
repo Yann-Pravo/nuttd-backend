@@ -11,6 +11,21 @@ interface FullUser extends User {
   nuts: Nut[]
 }
 
+interface GuildUser extends Pick<FullUser, 'id' | 'nuts'> {
+  profile: Pick<Profile, 'displayName'>
+  nutsMonthlyCount: number
+}
+
+export interface GuildNut extends Pick<Nut, 'id' | 'date' | 'comment'> {
+  displayName: string
+  location: Pick<Location, 'city' | 'country'>
+}
+
+export interface PrivateGuild extends Pick<Guild, 'id' | 'isPrivate' | 'name'> {
+  users: GuildUser[]
+  nuts: GuildNut[]
+}
+
 const saltRounds = 10
 
 export const hashPassword = (password: string) => {
@@ -54,6 +69,12 @@ export const getPublicNut = (nut: Nut) => {
 
 export const getPublicNuts = (nuts: Nut[]) =>
   nuts.map((nut) => getPublicNut(nut))
+
+export const getPrivateGuild = (guild: PrivateGuild) => {
+  const { id, isPrivate, name, users, nuts } = guild
+
+  return { id, isPrivate, name, users, nuts }
+}
 
 export const getGender = (gender?: string) => {
   if (!gender) return null
