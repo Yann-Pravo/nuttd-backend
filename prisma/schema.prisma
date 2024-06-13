@@ -91,6 +91,8 @@ model Location {
   region      String?
   regionName  String?
   zip         String?
+  latitude    String?
+  longitude   String?
   nuts        Nut[]
   users       User[]
 }

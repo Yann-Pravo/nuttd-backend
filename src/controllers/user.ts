@@ -44,6 +44,21 @@ const updateUserLocation = async (id: string, ip: string) => {
     const location = await response.json()
 
     if (location && location.city && location.country_name) {
+      const uniqueCityCountry = getUniqueCityCountry(
+        location.city,
+        location.country_name
+      )
+
+      await client.location.update({
+        where: {
+          citycountry: uniqueCityCountry,
+        },
+        data: {
+          latitude: location.latitude,
+          longitude: location.longitude,
+        },
+      })
+
       const user = await client.user.update({
         where: { id },
         data: {
@@ -51,10 +66,7 @@ const updateUserLocation = async (id: string, ip: string) => {
           location: {
             connectOrCreate: {
               create: {
-                citycountry: getUniqueCityCountry(
-                  location.city,
-                  location.country_name
-                ),
+                citycountry: uniqueCityCountry,
                 city: location.city,
                 country: location.country_name,
                 countryCode: location.country_code3,
@@ -62,12 +74,11 @@ const updateUserLocation = async (id: string, ip: string) => {
                 region: location.state_code,
                 regionName: location.state_prov,
                 zip: location.zipcode,
+                latitude: location.latitude,
+                longitude: location.longitude,
               },
               where: {
-                citycountry: getUniqueCityCountry(
-                  location.city,
-                  location.country_name
-                ),
+                citycountry: uniqueCityCountry,
               },
             },
           },
@@ -114,7 +125,7 @@ export const getUser = async (req: Request, res: Response) => {
     if (!user) throw new Error('User not found')
 
     let updatedUser
-    if (myIp !== user.ip) {
+    if (myIp && myIp !== user.ip) {
       updatedUser = await updateUserLocation(id, myIp)
     }
 

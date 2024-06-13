@@ -43,6 +43,16 @@ const updateUserLocation = (id, ip) => __awaiter(void 0, void 0, void 0, functio
         const response = yield fetch(`https://api.ipgeolocation.io/ipgeo?apiKey=${process.env.IPGEOLOCATION_KEY}&ip=${ip}`);
         const location = yield response.json();
         if (location && location.city && location.country_name) {
+            const uniqueCityCountry = (0, helpers_1.getUniqueCityCountry)(location.city, location.country_name);
+            yield client_1.client.location.update({
+                where: {
+                    citycountry: uniqueCityCountry,
+                },
+                data: {
+                    latitude: location.latitude,
+                    longitude: location.longitude,
+                },
+            });
             const user = yield client_1.client.user.update({
                 where: { id },
                 data: {
@@ -50,7 +60,7 @@ const updateUserLocation = (id, ip) => __awaiter(void 0, void 0, void 0, functio
                     location: {
                         connectOrCreate: {
                             create: {
-                                citycountry: (0, helpers_1.getUniqueCityCountry)(location.city, location.country_name),
+                                citycountry: uniqueCityCountry,
                                 city: location.city,
                                 country: location.country_name,
                                 countryCode: location.country_code3,
@@ -58,9 +68,11 @@ const updateUserLocation = (id, ip) => __awaiter(void 0, void 0, void 0, functio
                                 region: location.state_code,
                                 regionName: location.state_prov,
                                 zip: location.zipcode,
+                                latitude: location.latitude,
+                                longitude: location.longitude,
                             },
                             where: {
-                                citycountry: (0, helpers_1.getUniqueCityCountry)(location.city, location.country_name),
+                                citycountry: uniqueCityCountry,
                             },
                         },
                     },
@@ -104,7 +116,7 @@ const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (!user)
             throw new Error('User not found');
         let updatedUser;
-        if (myIp !== user.ip) {
+        if (myIp && myIp !== user.ip) {
             updatedUser = yield updateUserLocation(id, myIp);
         }
         return res.send((0, helpers_1.getPrivateUser)(updatedUser || user));
