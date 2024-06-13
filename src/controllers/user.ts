@@ -54,8 +54,8 @@ const updateUserLocation = async (id: string, ip: string) => {
           citycountry: uniqueCityCountry,
         },
         data: {
-          latitude: location.latitude,
-          longitude: location.longitude,
+          latitude: Number(location.latitude),
+          longitude: Number(location.longitude),
         },
       })
 
@@ -74,8 +74,8 @@ const updateUserLocation = async (id: string, ip: string) => {
                 region: location.state_code,
                 regionName: location.state_prov,
                 zip: location.zipcode,
-                latitude: location.latitude,
-                longitude: location.longitude,
+                latitude: Number(location.latitude),
+                longitude: Number(location.longitude),
               },
               where: {
                 citycountry: uniqueCityCountry,

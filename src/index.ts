@@ -9,6 +9,7 @@ import authProfile from './routes/profile'
 import nutRouter from './routes/nut'
 import authRouter from './routes/auth'
 import guildRouter from './routes/guild'
+import locationRouter from './routes/location'
 import './strategies/local-strategy'
 import './strategies/jwt-strategy'
 import './strategies/discord-strategy'
@@ -49,5 +50,6 @@ app.use('/api/users', userRouter)
 app.use('/api/profile', authProfile)
 app.use('/api/nuts', nutRouter)
 app.use('/api/guilds', guildRouter)
+app.use('/api/location', locationRouter)
 
 app.listen(port, () => console.log(`Server is running on port ${port}`))

@@ -49,8 +49,8 @@ const updateUserLocation = (id, ip) => __awaiter(void 0, void 0, void 0, functio
                     citycountry: uniqueCityCountry,
                 },
                 data: {
-                    latitude: location.latitude,
-                    longitude: location.longitude,
+                    latitude: Number(location.latitude),
+                    longitude: Number(location.longitude),
                 },
             });
             const user = yield client_1.client.user.update({
@@ -68,8 +68,8 @@ const updateUserLocation = (id, ip) => __awaiter(void 0, void 0, void 0, functio
                                 region: location.state_code,
                                 regionName: location.state_prov,
                                 zip: location.zipcode,
-                                latitude: location.latitude,
-                                longitude: location.longitude,
+                                latitude: Number(location.latitude),
+                                longitude: Number(location.longitude),
                             },
                             where: {
                                 citycountry: uniqueCityCountry,
