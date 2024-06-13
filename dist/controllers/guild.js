@@ -124,7 +124,7 @@ const getGuild = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             ];
             return Object.assign(Object.assign({}, user), { nutsMonthlyCount: user.nuts.length, nuts: undefined });
         })
-            .sort((userA, userB) => userB.nutsMonthlyCount < userA.nutsMonthlyCount ? 1 : -1);
+            .sort((userA, userB) => userB.nutsMonthlyCount > userA.nutsMonthlyCount ? 1 : -1);
         nuts = nuts.sort((nutA, nutB) => (nutB.date > nutA.date ? 1 : -1));
         if (guild)
             return res

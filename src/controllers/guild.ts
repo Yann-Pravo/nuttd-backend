@@ -126,7 +126,7 @@ export const getGuild = async (req: Request, res: Response) => {
         }
       })
       .sort((userA, userB) =>
-        userB.nutsMonthlyCount < userA.nutsMonthlyCount ? 1 : -1
+        userB.nutsMonthlyCount > userA.nutsMonthlyCount ? 1 : -1
       )
 
     nuts = nuts.sort((nutA, nutB) => (nutB.date > nutA.date ? 1 : -1))
