@@ -41,7 +41,7 @@ export const createGuild = async (req: Request, res: Response) => {
     return res.status(400).json({ msg: 'The id of the user is missing.' })
 
   try {
-    await client.guild.create({
+    const guild = await client.guild.create({
       data: {
         name: req.body.name,
         isPrivate: req.body.isPrivate,
@@ -54,7 +54,7 @@ export const createGuild = async (req: Request, res: Response) => {
       },
     })
 
-    return res.sendStatus(200)
+    return res.send(guild)
   } catch (err) {
     handleError(err, res)
   }
@@ -67,7 +67,6 @@ export const getGuild = async (req: Request, res: Response) => {
   const endDate = endOfMonth(new Date())
 
   try {
-    // const guild: PrivateGuild = await client.guild.findUnique({
     const guild = await client.guild.findUnique({
       where: { id: guildId },
       select: {

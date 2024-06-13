@@ -48,7 +48,7 @@ const createGuild = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     if (!id)
         return res.status(400).json({ msg: 'The id of the user is missing.' });
     try {
-        yield client_1.client.guild.create({
+        const guild = yield client_1.client.guild.create({
             data: {
                 name: req.body.name,
                 isPrivate: req.body.isPrivate,
@@ -60,7 +60,7 @@ const createGuild = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 },
             },
         });
-        return res.sendStatus(200);
+        return res.send(guild);
     }
     catch (err) {
         (0, errors_1.handleError)(err, res);
@@ -72,7 +72,6 @@ const getGuild = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const startDate = (0, date_fns_1.startOfMonth)(new Date());
     const endDate = (0, date_fns_1.endOfMonth)(new Date());
     try {
-        // const guild: PrivateGuild = await client.guild.findUnique({
         const guild = yield client_1.client.guild.findUnique({
             where: { id: guildId },
             select: {
