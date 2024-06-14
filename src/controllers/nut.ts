@@ -8,6 +8,7 @@ import {
   getUserRankByCountryForCurrentMonth,
   getUserRankByCountryForCurrentYear,
 } from '../utils/queries'
+import { endOfYear, startOfYear } from 'date-fns'
 
 export const getNuts = async (_: Request, res: Response) => {
   try {
@@ -36,12 +37,38 @@ export const getNut = async (req: Request, res: Response) => {
 }
 
 export const getMyNuts = async (req: Request, res: Response) => {
+  const { id } = req.user
+
+  const startDate = startOfYear(new Date())
+  const endDate = endOfYear(new Date())
+
   try {
     const nuts = await client.nut.findMany({
-      where: { userId: req.user?.id },
+      where: {
+        userId: id,
+        date: {
+          gte: startDate,
+          lte: endDate,
+        },
+      },
+      select: {
+        id: true,
+        date: true,
+        comment: true,
+        location: {
+          select: {
+            city: true,
+            country: true,
+          },
+        },
+      },
     })
 
-    return res.status(200).json(getPublicNuts(nuts))
+    const sortedNuts = nuts.sort((nutA, nutB) =>
+      nutB.date > nutA.date ? 1 : -1
+    )
+
+    return res.status(200).json(sortedNuts)
   } catch (err) {
     handleError(err, res)
   }
