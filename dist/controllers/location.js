@@ -13,7 +13,8 @@ exports.getNutCountByLocation = void 0;
 const date_fns_1 = require("date-fns");
 const client_1 = require("../libs/client");
 const errors_1 = require("../utils/errors");
-const getNutCountByLocation = (_, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getNutCountByLocation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { geoScope } = req.query;
     try {
         const startOfCurrentYear = (0, date_fns_1.startOfYear)(new Date());
         const endOfCurrentYear = (0, date_fns_1.endOfYear)(new Date());
@@ -35,17 +36,43 @@ const getNutCountByLocation = (_, res) => __awaiter(void 0, void 0, void 0, func
                 },
             },
         });
-        const locationsWithNutCount = locations
-            .map((location) => ({
-            id: location.id,
-            city: location.city,
-            country: location.country,
-            latitude: location.latitude,
-            longitude: location.longitude,
-            nutCount: location.nuts.length,
-        }))
-            .sort((locationA, locationB) => locationB.nutCount > locationA.nutCount ? 1 : -1);
-        res.status(200).json(locationsWithNutCount);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        let citiesWithNutCount = [];
+        let countriesWithNutCount = {};
+        if (geoScope === 'countries') {
+            countriesWithNutCount = locations.reduce((acc, location) => {
+                if (!location.countryCode)
+                    return;
+                if (!acc[location.countryCode]) {
+                    acc[location.countryCode] = {
+                        countryCode: location.countryCode,
+                        country: location.country,
+                        nutCount: 0,
+                    };
+                }
+                acc[location.countryCode].nutCount += location.nuts.length;
+                return acc;
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            }, {});
+            // locationsWithNutCount = Object.keys(countryNutCounts).map(
+            //   (key) => countryNutCounts[key]
+            // )
+        }
+        else {
+            citiesWithNutCount = locations
+                .map((location) => ({
+                id: location.id,
+                city: location.city,
+                country: location.country,
+                latitude: location.latitude,
+                longitude: location.longitude,
+                nutCount: location.nuts.length,
+            }))
+                .sort((locationA, locationB) => locationB.nutCount > locationA.nutCount ? 1 : -1);
+        }
+        res
+            .status(200)
+            .json({ cities: citiesWithNutCount, countries: countriesWithNutCount });
     }
     catch (err) {
         (0, errors_1.handleError)(err, res);
