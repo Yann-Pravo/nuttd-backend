@@ -27,14 +27,18 @@ export const getNutCountByLocation = async (_: Request, res: Response) => {
       },
     })
 
-    const locationsWithNutCount = locations.map((location) => ({
-      id: location.id,
-      city: location.city,
-      country: location.country,
-      latitude: location.latitude,
-      longitude: location.longitude,
-      nutCount: location.nuts.length,
-    }))
+    const locationsWithNutCount = locations
+      .map((location) => ({
+        id: location.id,
+        city: location.city,
+        country: location.country,
+        latitude: location.latitude,
+        longitude: location.longitude,
+        nutCount: location.nuts.length,
+      }))
+      .sort((locationA, locationB) =>
+        locationB.nutCount < locationA.nutCount ? 1 : -1
+      )
 
     res.status(200).json(locationsWithNutCount)
   } catch (err) {
