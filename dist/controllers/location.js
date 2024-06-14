@@ -44,7 +44,7 @@ const getNutCountByLocation = (_, res) => __awaiter(void 0, void 0, void 0, func
             longitude: location.longitude,
             nutCount: location.nuts.length,
         }))
-            .sort((locationA, locationB) => locationB.nutCount < locationA.nutCount ? 1 : -1);
+            .sort((locationA, locationB) => locationB.nutCount > locationA.nutCount ? 1 : -1);
         res.status(200).json(locationsWithNutCount);
     }
     catch (err) {

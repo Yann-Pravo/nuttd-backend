@@ -37,7 +37,7 @@ export const getNutCountByLocation = async (_: Request, res: Response) => {
         nutCount: location.nuts.length,
       }))
       .sort((locationA, locationB) =>
-        locationB.nutCount < locationA.nutCount ? 1 : -1
+        locationB.nutCount > locationA.nutCount ? 1 : -1
       )
 
     res.status(200).json(locationsWithNutCount)
