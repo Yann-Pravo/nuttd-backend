@@ -42,16 +42,11 @@ const getNut = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.getNut = getNut;
 const getMyNuts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.user;
-    const startDate = (0, date_fns_1.startOfYear)(new Date());
-    const endDate = (0, date_fns_1.endOfYear)(new Date());
     try {
         const nuts = yield client_1.client.nut.findMany({
+            take: 30,
             where: {
                 userId: id,
-                date: {
-                    gte: startDate,
-                    lte: endDate,
-                },
             },
             select: {
                 id: true,
@@ -64,37 +59,98 @@ const getMyNuts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                     },
                 },
             },
+            orderBy: {
+                date: 'desc',
+            },
         });
-        const sortedNuts = nuts.sort((nutA, nutB) => nutB.date > nutA.date ? 1 : -1);
-        return res.status(200).json(sortedNuts);
+        return res.status(200).json(nuts);
     }
     catch (err) {
         (0, errors_1.handleError)(err, res);
     }
 });
 exports.getMyNuts = getMyNuts;
+const getMyNutsPeriodCount = (date, userId) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        return yield client_1.client.nut.count({
+            where: {
+                userId,
+                date: {
+                    gte: date,
+                },
+            },
+        });
+    }
+    catch (err) {
+        return err;
+    }
+});
+const getAverageNutsPerDayForQuarters = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const now = new Date();
+    const startOfCurrentQuarter = (0, date_fns_1.startOfQuarter)(now);
+    const endOfCurrentQuarter = (0, date_fns_1.endOfQuarter)(now);
+    const startOfLastQuarter = (0, date_fns_1.startOfQuarter)((0, date_fns_1.subQuarters)(now, 1));
+    const endOfLastQuarter = (0, date_fns_1.endOfQuarter)((0, date_fns_1.subQuarters)(now, 1));
+    try {
+        // Fetch nuts for the current quarter
+        const nutsCurrentQuarter = yield client_1.client.nut.findMany({
+            where: {
+                userId,
+                createdAt: {
+                    gte: startOfCurrentQuarter,
+                    lte: endOfCurrentQuarter,
+                },
+            },
+        });
+        // Fetch nuts for the last quarter
+        const nutsLastQuarter = yield client_1.client.nut.findMany({
+            where: {
+                userId,
+                createdAt: {
+                    gte: startOfLastQuarter,
+                    lte: endOfLastQuarter,
+                },
+            },
+        });
+        const averageNutsPerDayCurrentQuarter = (0, helpers_1.calculateAverageNutsPerDay)(nutsCurrentQuarter, startOfCurrentQuarter, endOfCurrentQuarter);
+        const averageNutsPerDayLastQuarter = (0, helpers_1.calculateAverageNutsPerDay)(nutsLastQuarter, startOfLastQuarter, endOfLastQuarter);
+        return {
+            currentQuarter: averageNutsPerDayCurrentQuarter,
+            lastQuarter: averageNutsPerDayLastQuarter,
+        };
+    }
+    catch (err) {
+        return err;
+    }
+});
+const getNutCountForLast21Days = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const twentyOneDaysAgo = (0, date_fns_1.subDays)(new Date(), 21);
+    try {
+        const nutCount = yield client_1.client.nut.count({
+            where: {
+                userId: userId,
+                createdAt: {
+                    gte: twentyOneDaysAgo,
+                },
+            },
+        });
+        return nutCount;
+    }
+    catch (err) {
+        return err;
+    }
+});
 const getMyNutsCount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.user;
-    const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-    const startOfYear = new Date(new Date().getFullYear(), 0, 1);
+    const startOfMonthDate = (0, date_fns_1.startOfMonth)(new Date());
+    const startOfYearDate = (0, date_fns_1.startOfYear)(new Date());
     try {
-        const currentMonthCount = yield client_1.client.nut.count({
-            where: {
-                userId: id,
-                date: {
-                    gte: startOfMonth,
-                },
-            },
-        });
-        const currentYearCount = yield client_1.client.nut.count({
-            where: {
-                userId: id,
-                date: {
-                    gte: startOfYear,
-                },
-            },
-        });
-        return res.status(200).json({ currentMonthCount, currentYearCount });
+        const currentMonthCount = yield getMyNutsPeriodCount(startOfMonthDate, id);
+        const currentYearCount = yield getMyNutsPeriodCount(startOfYearDate, id);
+        const averageNutPerDayForQuarters = yield getAverageNutsPerDayForQuarters(id);
+        const nutCountForLast21Days = yield getNutCountForLast21Days(id);
+        return res.status(200).json(Object.assign(Object.assign({ currentMonthCount,
+            currentYearCount }, averageNutPerDayForQuarters), { nutCountForLast21Days }));
     }
     catch (err) {
         (0, errors_1.handleError)(err, res);

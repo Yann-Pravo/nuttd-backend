@@ -54,9 +54,6 @@ const getNutCountByLocation = (req, res) => __awaiter(void 0, void 0, void 0, fu
                 return acc;
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
             }, {});
-            // locationsWithNutCount = Object.keys(countryNutCounts).map(
-            //   (key) => countryNutCounts[key]
-            // )
         }
         else {
             citiesWithNutCount = locations

@@ -3,9 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUniqueCityCountry = exports.excludeExpiredTokens = exports.generateRefreshToken = exports.generateAccessToken = exports.getGender = exports.getPrivateGuild = exports.getPublicNuts = exports.getPublicNut = exports.getPublicUsers = exports.getPublicUser = exports.getPrivateUser = exports.comparePassword = exports.hashPassword = void 0;
+exports.calculateAverageNutsPerDay = exports.getUniqueCityCountry = exports.excludeExpiredTokens = exports.generateRefreshToken = exports.generateAccessToken = exports.getGender = exports.getPrivateGuild = exports.getPublicNuts = exports.getPublicNut = exports.getPublicUsers = exports.getPublicUser = exports.getPrivateUser = exports.comparePassword = exports.hashPassword = void 0;
 const client_1 = require("@prisma/client");
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const date_fns_1 = require("date-fns");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const saltRounds = 10;
 const hashPassword = (password) => {
@@ -74,4 +75,12 @@ const excludeExpiredTokens = (tokens) => tokens.filter((token) => {
 exports.excludeExpiredTokens = excludeExpiredTokens;
 const getUniqueCityCountry = (city, country) => `${city}-${country}`;
 exports.getUniqueCityCountry = getUniqueCityCountry;
+const calculateAverageNutsPerDay = (nuts, start, end) => {
+    const days = (0, date_fns_1.eachDayOfInterval)({ start, end });
+    const totalDays = days.length;
+    const totalNuts = nuts.length;
+    const average = totalNuts / totalDays;
+    return average;
+};
+exports.calculateAverageNutsPerDay = calculateAverageNutsPerDay;
 //# sourceMappingURL=helpers.js.map

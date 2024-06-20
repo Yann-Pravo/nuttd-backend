@@ -1,14 +1,28 @@
 import { Request, Response } from 'express'
 import { client } from '../libs/client'
 import { handleError } from '../utils/errors'
-import { getPublicNut, getPublicNuts } from '../utils/helpers'
+import {
+  calculateAverageNutsPerDay,
+  getPublicNut,
+  getPublicNuts,
+} from '../utils/helpers'
 import {
   getUserRankByCityForCurrentMonth,
   getUserRankByCityForCurrentYear,
   getUserRankByCountryForCurrentMonth,
   getUserRankByCountryForCurrentYear,
 } from '../utils/queries'
-import { endOfYear, startOfYear } from 'date-fns'
+import {
+  eachDayOfInterval,
+  endOfQuarter,
+  endOfYear,
+  startOfMonth,
+  startOfQuarter,
+  startOfYear,
+  subDays,
+  subQuarters,
+} from 'date-fns'
+import { Nut } from '@prisma/client'
 
 export const getNuts = async (_: Request, res: Response) => {
   try {
@@ -39,17 +53,11 @@ export const getNut = async (req: Request, res: Response) => {
 export const getMyNuts = async (req: Request, res: Response) => {
   const { id } = req.user
 
-  const startDate = startOfYear(new Date())
-  const endDate = endOfYear(new Date())
-
   try {
     const nuts = await client.nut.findMany({
+      take: 30,
       where: {
         userId: id,
-        date: {
-          gte: startDate,
-          lte: endDate,
-        },
       },
       select: {
         id: true,
@@ -62,49 +70,122 @@ export const getMyNuts = async (req: Request, res: Response) => {
           },
         },
       },
+      orderBy: {
+        date: 'desc',
+      },
     })
 
-    const sortedNuts = nuts.sort((nutA, nutB) =>
-      nutB.date > nutA.date ? 1 : -1
-    )
-
-    return res.status(200).json(sortedNuts)
+    return res.status(200).json(nuts)
   } catch (err) {
     handleError(err, res)
+  }
+}
+
+const getMyNutsPeriodCount = async (date: Date, userId: string) => {
+  try {
+    return await client.nut.count({
+      where: {
+        userId,
+        date: {
+          gte: date,
+        },
+      },
+    })
+  } catch (err) {
+    return err
+  }
+}
+
+const getAverageNutsPerDayForQuarters = async (userId: string) => {
+  const now = new Date()
+  const startOfCurrentQuarter = startOfQuarter(now)
+  const endOfCurrentQuarter = endOfQuarter(now)
+  const startOfLastQuarter = startOfQuarter(subQuarters(now, 1))
+  const endOfLastQuarter = endOfQuarter(subQuarters(now, 1))
+
+  try {
+    // Fetch nuts for the current quarter
+    const nutsCurrentQuarter = await client.nut.findMany({
+      where: {
+        userId,
+        createdAt: {
+          gte: startOfCurrentQuarter,
+          lte: endOfCurrentQuarter,
+        },
+      },
+    })
+
+    // Fetch nuts for the last quarter
+    const nutsLastQuarter = await client.nut.findMany({
+      where: {
+        userId,
+        createdAt: {
+          gte: startOfLastQuarter,
+          lte: endOfLastQuarter,
+        },
+      },
+    })
+
+    const averageNutsPerDayCurrentQuarter = calculateAverageNutsPerDay(
+      nutsCurrentQuarter,
+      startOfCurrentQuarter,
+      endOfCurrentQuarter
+    )
+    const averageNutsPerDayLastQuarter = calculateAverageNutsPerDay(
+      nutsLastQuarter,
+      startOfLastQuarter,
+      endOfLastQuarter
+    )
+
+    return {
+      currentQuarter: averageNutsPerDayCurrentQuarter,
+      lastQuarter: averageNutsPerDayLastQuarter,
+    }
+  } catch (err) {
+    return err
+  }
+}
+
+const getNutCountForLast21Days = async (userId: string) => {
+  const twentyOneDaysAgo = subDays(new Date(), 21)
+
+  try {
+    const nutCount = await client.nut.count({
+      where: {
+        userId: userId,
+        createdAt: {
+          gte: twentyOneDaysAgo,
+        },
+      },
+    })
+
+    return nutCount
+  } catch (err) {
+    return err
   }
 }
 
 export const getMyNutsCount = async (req: Request, res: Response) => {
   const { id } = req.user
 
-  const startOfMonth = new Date(
-    new Date().getFullYear(),
-    new Date().getMonth(),
-    1
-  )
-
-  const startOfYear = new Date(new Date().getFullYear(), 0, 1)
+  const startOfMonthDate = startOfMonth(new Date())
+  const startOfYearDate = startOfYear(new Date())
 
   try {
-    const currentMonthCount = await client.nut.count({
-      where: {
-        userId: id,
-        date: {
-          gte: startOfMonth,
-        },
-      },
-    })
+    const currentMonthCount = await getMyNutsPeriodCount(startOfMonthDate, id)
+    const currentYearCount = await getMyNutsPeriodCount(startOfYearDate, id)
 
-    const currentYearCount = await client.nut.count({
-      where: {
-        userId: id,
-        date: {
-          gte: startOfYear,
-        },
-      },
-    })
+    const averageNutPerDayForQuarters =
+      await getAverageNutsPerDayForQuarters(id)
 
-    return res.status(200).json({ currentMonthCount, currentYearCount })
+    const nutCountForLast21Days = await getNutCountForLast21Days(id)
+
+    return res.status(200).json({
+      currentMonthCount,
+      currentYearCount,
+      ...averageNutPerDayForQuarters,
+      nutCountForLast21Days,
+    })
   } catch (err) {
     handleError(err, res)
   }

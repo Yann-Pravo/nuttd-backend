@@ -1,5 +1,6 @@
 import { Gender, Guild, Nut, Profile, User, Location } from '@prisma/client'
 import bcrypt from 'bcrypt'
+import { eachDayOfInterval } from 'date-fns'
 import jwt from 'jsonwebtoken'
 
 interface FullUser extends User {
@@ -108,3 +109,15 @@ export const excludeExpiredTokens = (tokens: string[]) =>
 
 export const getUniqueCityCountry = (city: string, country: string) =>
   `${city}-${country}`
+
+export const calculateAverageNutsPerDay = (
+  nuts: Nut[],
+  start: Date,
+  end: Date
+) => {
+  const days = eachDayOfInterval({ start, end })
+  const totalDays = days.length
+  const totalNuts = nuts.length
+  const average = totalNuts / totalDays
+  return average
+}

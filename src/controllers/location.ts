@@ -47,10 +47,6 @@ export const getNutCountByLocation = async (req: Request, res: Response) => {
         return acc
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       }, {} as any)
-
-      // locationsWithNutCount = Object.keys(countryNutCounts).map(
-      //   (key) => countryNutCounts[key]
-      // )
     } else {
       citiesWithNutCount = locations
         .map((location) => ({
