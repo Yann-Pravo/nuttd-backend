@@ -115,8 +115,8 @@ const getAverageNutsPerDayForQuarters = (userId) => __awaiter(void 0, void 0, vo
         const averageNutsPerDayCurrentQuarter = (0, helpers_1.calculateAverageNutsPerDay)(nutsCurrentQuarter, startOfCurrentQuarter, endOfCurrentQuarter);
         const averageNutsPerDayLastQuarter = (0, helpers_1.calculateAverageNutsPerDay)(nutsLastQuarter, startOfLastQuarter, endOfLastQuarter);
         return {
-            currentQuarter: averageNutsPerDayCurrentQuarter,
-            lastQuarter: averageNutsPerDayLastQuarter,
+            currentQuarter: Number(averageNutsPerDayCurrentQuarter.toFixed(2)),
+            lastQuarter: Number(averageNutsPerDayLastQuarter.toFixed(2)),
         };
     }
     catch (err) {

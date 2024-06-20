@@ -13,16 +13,13 @@ import {
   getUserRankByCountryForCurrentYear,
 } from '../utils/queries'
 import {
-  eachDayOfInterval,
   endOfQuarter,
-  endOfYear,
   startOfMonth,
   startOfQuarter,
   startOfYear,
   subDays,
   subQuarters,
 } from 'date-fns'
-import { Nut } from '@prisma/client'
 
 export const getNuts = async (_: Request, res: Response) => {
   try {
@@ -138,8 +135,8 @@ const getAverageNutsPerDayForQuarters = async (userId: string) => {
     )
 
     return {
-      currentQuarter: averageNutsPerDayCurrentQuarter,
-      lastQuarter: averageNutsPerDayLastQuarter,
+      currentQuarter: Number(averageNutsPerDayCurrentQuarter.toFixed(2)),
+      lastQuarter: Number(averageNutsPerDayLastQuarter.toFixed(2)),
     }
   } catch (err) {
     return err
