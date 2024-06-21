@@ -9,6 +9,7 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const passport_1 = __importDefault(require("passport"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const cors_1 = __importDefault(require("cors"));
+const request_ip_1 = __importDefault(require("request-ip"));
 const user_1 = __importDefault(require("./routes/user"));
 const profile_1 = __importDefault(require("./routes/profile"));
 const nut_1 = __importDefault(require("./routes/nut"));
@@ -31,6 +32,7 @@ app.use((0, cors_1.default)(corsOptions));
 app.options('*', (0, cors_1.default)(corsOptions));
 app.use(express_1.default.json());
 app.use((0, cookie_parser_1.default)());
+app.use(request_ip_1.default.mw());
 app.use((0, express_session_1.default)({
     secret: process.env.SESSION_SECRET || '',
     saveUninitialized: false,

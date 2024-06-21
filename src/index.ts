@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser'
 import passport from 'passport'
 import dotenv from 'dotenv'
 import cors from 'cors'
+import requestIp from 'request-ip'
 import userRouter from './routes/user'
 import authProfile from './routes/profile'
 import nutRouter from './routes/nut'
@@ -31,6 +32,7 @@ app.options('*', cors(corsOptions))
 
 app.use(express.json())
 app.use(cookieParser())
+app.use(requestIp.mw())
 
 app.use(
   session({
