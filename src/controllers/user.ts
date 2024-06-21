@@ -118,10 +118,7 @@ export const getUser = async (req: Request, res: Response) => {
       updatedUser = await updateUserLocation(id, req.clientIp)
     }
 
-    return res.send({
-      ...getPrivateUser(updatedUser || user),
-      ip: req.clientIp,
-    })
+    return res.send(getPrivateUser(updatedUser || user))
   } catch (err) {
     handleError(err, res)
   }

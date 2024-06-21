@@ -109,7 +109,7 @@ const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (req.clientIp && req.clientIp !== user.ip) {
             updatedUser = yield updateUserLocation(id, req.clientIp);
         }
-        return res.send(Object.assign(Object.assign({}, (0, helpers_1.getPrivateUser)(updatedUser || user)), { ip: req.clientIp }));
+        return res.send((0, helpers_1.getPrivateUser)(updatedUser || user));
     }
     catch (err) {
         (0, errors_1.handleError)(err, res);
