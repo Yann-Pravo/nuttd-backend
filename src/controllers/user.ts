@@ -49,16 +49,6 @@ const updateUserLocation = async (id: string, ip: string) => {
         location.country_name
       )
 
-      await client.location.update({
-        where: {
-          citycountry: uniqueCityCountry,
-        },
-        data: {
-          latitude: Number(location.latitude),
-          longitude: Number(location.longitude),
-        },
-      })
-
       const user = await client.user.update({
         where: { id },
         data: {
@@ -92,8 +82,6 @@ const updateUserLocation = async (id: string, ip: string) => {
           location: true,
         },
       })
-
-      console.log(ip, user.ip)
 
       return user
     }

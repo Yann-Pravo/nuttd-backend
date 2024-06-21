@@ -44,15 +44,6 @@ const updateUserLocation = (id, ip) => __awaiter(void 0, void 0, void 0, functio
         const location = yield response.json();
         if (location && location.city && location.country_name) {
             const uniqueCityCountry = (0, helpers_1.getUniqueCityCountry)(location.city, location.country_name);
-            yield client_1.client.location.update({
-                where: {
-                    citycountry: uniqueCityCountry,
-                },
-                data: {
-                    latitude: Number(location.latitude),
-                    longitude: Number(location.longitude),
-                },
-            });
             const user = yield client_1.client.user.update({
                 where: { id },
                 data: {
@@ -86,7 +77,6 @@ const updateUserLocation = (id, ip) => __awaiter(void 0, void 0, void 0, functio
                     location: true,
                 },
             });
-            console.log(ip, user.ip);
             return user;
         }
     }

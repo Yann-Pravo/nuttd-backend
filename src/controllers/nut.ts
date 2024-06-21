@@ -143,15 +143,15 @@ const getAverageNutsPerDayForQuarters = async (userId: string) => {
   }
 }
 
-const getNutCountForLast21Days = async (userId: string) => {
-  const twentyOneDaysAgo = subDays(new Date(), 21)
+const getNutCountForLast31Days = async (userId: string) => {
+  const startDate = subDays(new Date(), 31)
 
   try {
     const nutCount = await client.nut.count({
       where: {
         userId: userId,
         createdAt: {
-          gte: twentyOneDaysAgo,
+          gte: startDate,
         },
       },
     })
@@ -175,13 +175,13 @@ export const getMyNutsCount = async (req: Request, res: Response) => {
     const averageNutPerDayForQuarters =
       await getAverageNutsPerDayForQuarters(id)
 
-    const nutCountForLast21Days = await getNutCountForLast21Days(id)
+    const nutCountForLast31Days = await getNutCountForLast31Days(id)
 
     return res.status(200).json({
       currentMonthCount,
       currentYearCount,
       ...averageNutPerDayForQuarters,
-      nutCountForLast21Days,
+      nutCountForLast31Days,
     })
   } catch (err) {
     handleError(err, res)
