@@ -116,7 +116,7 @@ const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (!user)
             throw new Error('User not found');
         let updatedUser;
-        if (req.clientIp && req.clientIp !== user.ip && user.ip !== 'null') {
+        if (req.clientIp && req.clientIp !== user.ip) {
             updatedUser = yield updateUserLocation(id, req.clientIp);
         }
         return res.send((0, helpers_1.getPrivateUser)(updatedUser || user));

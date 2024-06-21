@@ -126,7 +126,7 @@ export const getUser = async (req: Request, res: Response) => {
     if (!user) throw new Error('User not found')
 
     let updatedUser
-    if (req.clientIp && req.clientIp !== user.ip && user.ip !== 'null') {
+    if (req.clientIp && req.clientIp !== user.ip) {
       updatedUser = await updateUserLocation(id, req.clientIp)
     }
 
